@@ -1,37 +1,46 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Tema base -->
+    <!-- Tema base Sentix -->
     <style name="Base.Theme.Login_Guevara" parent="Theme.Material3.Light.NoActionBar">
 
-
+        <!-- Tipografía -->
         <item name="android:fontFamily">sans-serif</item>
 
+        <!-- Colores principales Sentix -->
+        <item name="colorPrimary">@color/sentix_blue</item>
+        <item name="colorPrimaryVariant">@color/sentix_blue</item>
+        <item name="colorSecondary">@color/sentix_purple</item>
+        <item name="android:colorAccent">@color/sentix_blue</item>
 
-        <item name="colorPrimary">#FFB300</item>
-        <item name="colorPrimaryVariant">#F9A602</item>
-        <item name="colorSecondary">#FFB300</item>
+        <!-- Barra superior e inferior del sistema -->
+        <item name="android:statusBarColor">@color/bg_light</item>
+        <item name="android:navigationBarColor">@color/white</item>
 
-
-        <item name="android:colorAccent">#FFB300</item>
+        <!-- Iconos oscuros en barra superior e inferior -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <!-- Sin ActionBar -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
 
     </style>
-    <style name="DatePickerStyle" parent="Theme.Material3.Light.Dialog">
 
+    <!-- DatePicker adaptado a Sentix -->
+    <style name="DatePickerStyle" parent="Theme.Material3.Light.Dialog">
 
         <item name="android:textColorPrimary">#000000</item>
         <item name="android:textColorSecondary">#000000</item>
 
+        <item name="colorPrimary">@color/sentix_blue</item>
+        <item name="colorSecondary">@color/sentix_purple</item>
+        <item name="android:colorAccent">@color/sentix_blue</item>
 
         <item name="colorOnSurface">#000000</item>
+        <item name="colorOnPrimary">@color/white</item>
 
-
-        <item name="colorOnPrimary">#000000</item>
-
-        <!-- Tu color amarillo -->
-        <item name="colorPrimary">#FFB300</item>
-        <item name="android:colorAccent">#FFB300</item>
         <item name="materialCalendarTheme">@style/DatePickerStyle</item>
     </style>
+
     <!-- Tema final -->
     <style name="Theme.Login_Guevara" parent="Base.Theme.Login_Guevara" />
 
