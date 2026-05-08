@@ -1,0 +1,38 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Tema base -->
+    <style name="Base.Theme.Login_Guevara" parent="Theme.Material3.Light.NoActionBar">
+
+
+        <item name="android:fontFamily">sans-serif</item>
+
+
+        <item name="colorPrimary">#FFB300</item>
+        <item name="colorPrimaryVariant">#F9A602</item>
+        <item name="colorSecondary">#FFB300</item>
+
+
+        <item name="android:colorAccent">#FFB300</item>
+
+    </style>
+    <style name="DatePickerStyle" parent="Theme.Material3.Light.Dialog">
+
+
+        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorSecondary">#000000</item>
+
+
+        <item name="colorOnSurface">#000000</item>
+
+
+        <item name="colorOnPrimary">#000000</item>
+
+        <!-- Tu color amarillo -->
+        <item name="colorPrimary">#FFB300</item>
+        <item name="android:colorAccent">#FFB300</item>
+        <item name="materialCalendarTheme">@style/DatePickerStyle</item>
+    </style>
+    <!-- Tema final -->
+    <style name="Theme.Login_Guevara" parent="Base.Theme.Login_Guevara" />
+
+</resources>

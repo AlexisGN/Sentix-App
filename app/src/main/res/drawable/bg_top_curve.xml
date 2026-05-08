@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="220dp"
+    android:height="255dp"
+    android:viewportWidth="220"
+    android:viewportHeight="255">
+
+    <!-- Sombra suave -->
+    <path
+        android:fillColor="@color/sentix_purple"
+        android:fillAlpha="0.18"
+        android:pathData="M0,0 H175 C185,0 192,8 192,20 V58 C192,86 162,96 128,101 C72,110 42,138 32,185 C25,218 13,238 0,250 Z" />
+
+    <!-- Capa principal -->
+    <path
+        android:fillColor="@color/sentix_blue"
+        android:fillAlpha="0.92"
+        android:pathData="M0,0 H160 C170,0 176,8 176,18 V55 C176,80 150,88 120,92 C65,100 35,125 27,175 C22,205 12,225 0,235 Z" />
+
+    <!-- Borde interno cyan -->
+    <path
+        android:fillColor="@color/sentix_cyan"
+        android:fillAlpha="0.75"
+        android:pathData="M0,0 H145 C156,0 164,8 164,19 V53 C164,76 140,83 112,88 C60,97 31,124 24,169 C19,198 10,216 0,228 Z" />
+
+    <!-- Profundidad morada -->
+    <path
+        android:fillColor="@color/sentix_purple"
+        android:fillAlpha="0.20"
+        android:pathData="M0,0 H125 C138,0 146,8 146,20 V50 C146,70 127,77 102,82 C55,92 30,118 23,160 C18,187 9,205 0,215 Z" />
+
+</vector>

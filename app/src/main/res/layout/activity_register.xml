@@ -1,0 +1,171 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_screen">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/bg_header_sentix"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="28dp"
+            android:paddingEnd="28dp"
+            android:paddingTop="105dp"
+            android:paddingBottom="30dp">
+
+            <!-- TITULO -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Crear cuenta"
+                android:textColor="@color/text_dark"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:gravity="center" />
+
+            <!-- USUARIO -->
+            <EditText
+                android:id="@+id/edtUsuarioRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="40dp"
+                android:backgroundTint="@color/input_border"
+                android:drawableStart="@drawable/ic_user"
+                android:drawablePadding="14dp"
+                android:hint="Usuario"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <!-- NOMBRE -->
+            <EditText
+                android:id="@+id/edtNombre"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/input_border"
+                android:drawableStart="@drawable/ic_user"
+                android:drawablePadding="14dp"
+                android:hint="Nombre"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <!-- APELLIDOS -->
+            <EditText
+                android:id="@+id/edtApellidoPaterno"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/input_border"
+                android:hint="Apellido paterno"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/edtApellidoMaterno"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/input_border"
+                android:hint="Apellido materno"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <!-- FECHA -->
+            <EditText
+                android:id="@+id/edtFechaNacimiento"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/input_border"
+                android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                android:drawablePadding="14dp"
+                android:hint="Fecha de nacimiento"
+                android:focusable="false"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <!-- EMAIL -->
+            <EditText
+                android:id="@+id/edtEmailRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/input_border"
+                android:drawableStart="@drawable/ic_email"
+                android:drawablePadding="14dp"
+                android:hint="Correo electrónico"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <!-- PASSWORD -->
+            <EditText
+                android:id="@+id/edtPasswordRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/input_border"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="14dp"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <!-- AYUDA -->
+            <TextView
+                android:id="@+id/txtAyudaPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Debe tener mínimo 6 caracteres, una mayúscula y un carácter especial."
+                android:textColor="@color/sentix_purple"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+
+            <!-- CONFIRMAR -->
+            <EditText
+                android:id="@+id/edtConfirmarPassword"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/input_border"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="14dp"
+                android:hint="Confirmar contraseña"
+                android:inputType="textPassword"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_soft"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnRegistrar"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_button"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:text="REGISTRARME"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

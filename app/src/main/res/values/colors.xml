@@ -1,0 +1,21 @@
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Identidad Sentix -->
+    <color name="sentix_blue">#2563EB</color>
+    <color name="sentix_purple">#7C3AED</color>
+    <color name="sentix_cyan">#06B6D4</color>
+    <color name="sentix_green">#10B981</color>
+    <color name="sentix_soft">#E0F2FE</color>
+
+    <!-- Texto -->
+    <color name="text_dark">#1F2937</color>
+    <color name="text_soft">#6B7280</color>
+
+    <!-- Fondos -->
+    <color name="bg_light">#F8FAFC</color>
+    <color name="input_border">#93C5FD</color>
+    <color name="background">#F5F7FB</color>
+
+</resources>

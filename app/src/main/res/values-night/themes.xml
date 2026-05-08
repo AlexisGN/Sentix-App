@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.Login_Guevara" parent="Theme.Material3.Light.NoActionBar">
+
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="colorPrimary">#FFB300</item>
+        <item name="colorPrimaryVariant">#F9A602</item>
+        <item name="colorSecondary">#FFB300</item>
+        <item name="android:colorAccent">#FFB300</item>
+
+    </style>
+
+    <style name="Theme.Login_Guevara" parent="Base.Theme.Login_Guevara" />
+
+</resources>
