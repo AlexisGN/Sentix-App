@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import android.view.View
 
 class SplashActivity : AppCompatActivity() {
 
@@ -14,6 +15,14 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        val rootSplash = findViewById<View>(R.id.rootSplash)
+
+        SystemBarsHelper.aplicarInsets(
+            activity = this,
+            rootView = rootSplash,
+            aplicarArriba = true,
+            aplicarAbajo = true
+        )
         val logo = findViewById<ImageView>(R.id.imgLogoSplash)
         val animacion = AnimationUtils.loadAnimation(this, R.anim.splash_zoom_fade)
         logo.startAnimation(animacion)

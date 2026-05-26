@@ -26,19 +26,24 @@
     </style>
 
     <!-- DatePicker adaptado a Sentix -->
-    <style name="DatePickerStyle" parent="Theme.Material3.Light.Dialog">
-
-        <item name="android:textColorPrimary">#000000</item>
-        <item name="android:textColorSecondary">#000000</item>
+    <style name="DatePickerStyle" parent="Theme.Material3.Light.Dialog.Alert">
 
         <item name="colorPrimary">@color/sentix_blue</item>
         <item name="colorSecondary">@color/sentix_purple</item>
-        <item name="android:colorAccent">@color/sentix_blue</item>
+        <item name="android:colorAccent">@color/sentix_purple</item>
 
-        <item name="colorOnSurface">#000000</item>
+        <item name="android:textColorPrimary">#1F2937</item>
+        <item name="android:textColorSecondary">#6B7280</item>
+        <item name="colorOnSurface">#1F2937</item>
         <item name="colorOnPrimary">@color/white</item>
 
-        <item name="materialCalendarTheme">@style/DatePickerStyle</item>
+        <item name="android:buttonBarButtonStyle">@style/DatePickerButtonStyle</item>
+        <item name="buttonBarButtonStyle">@style/DatePickerButtonStyle</item>
+    </style>
+
+    <style name="DatePickerButtonStyle" parent="@android:style/Widget.Material.Button.Borderless">
+        <item name="android:textColor">@color/sentix_blue</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <!-- Tema final -->

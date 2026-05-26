@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Permisos para Firebase, Firestore, Storage y autenticación -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -8,7 +12,7 @@
         android:label="Sentix"
         android:supportsRtl="true">
 
-        <!-- Splash (PRIMERA PANTALLA) -->
+        <!-- Splash: primera pantalla -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -20,19 +24,37 @@
 
         </activity>
 
-        <!-- MAIN (LOGIN) -->
+        <!-- Login -->
         <activity
             android:name=".MainActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".SuccessActivity"
-            android:exported="false" />
-
+        <!-- Registro -->
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
 
+        <!-- Menú principal / Dashboard -->
+        <activity
+            android:name=".SuccessActivity"
+            android:exported="false" />
+
+        <!-- Perfil de usuario -->
+        <activity
+            android:name=".CuentaActivity"
+            android:exported="false" />
+
+        <!-- Editar perfil -->
+        <activity
+            android:name=".EditarPerfilActivity"
+            android:exported="false" />
+
+        <!-- Recorte de imagen para foto de perfil -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Sentix.UCrop" />
 
     </application>
 

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -50,4 +51,10 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.play.services.auth)
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.github.yalantis:ucrop:2.2.8")
 }
