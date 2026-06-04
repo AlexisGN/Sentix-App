@@ -57,4 +57,15 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.github.yalantis:ucrop:2.2.8")
+
+    // TensorFlow Lite para ejecutar el modelo CNN en Android
+    implementation("org.tensorflow:tensorflow-lite:2.17.0")
+
+
+    // CameraX para vista previa y captura de imagen
+    implementation("androidx.camera:camera-core:1.4.2")
+    implementation("androidx.camera:camera-camera2:1.4.2")
+    implementation("androidx.camera:camera-lifecycle:1.4.2")
+    implementation("androidx.camera:camera-view:1.4.2")
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
 }

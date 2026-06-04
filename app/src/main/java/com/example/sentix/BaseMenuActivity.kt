@@ -56,7 +56,15 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     open fun onUsuarioActualizado(cache: UsuarioCache) {}
 
     open fun onMenuEvaluacionSeleccionada() {
-        Toast.makeText(this, "Próximamente: Evaluación emocional", Toast.LENGTH_SHORT).show()
+        if (this is EvaluacionCamaraActivity) {
+            ocultarMenu()
+            return
+        }
+
+        val intent = Intent(this, EvaluacionCamaraActivity::class.java)
+        intent.putExtra("uid", uidActual)
+        intent.putExtra("email", emailActual)
+        startActivity(intent)
     }
 
     open fun onMenuHistorialSeleccionado() {
@@ -406,7 +414,7 @@ abstract class BaseMenuActivity : AppCompatActivity() {
 
         findViewById<LinearLayout>(R.id.itemEvaluacion).setOnClickListener {
             onMenuEvaluacionSeleccionada()
-            ocultarMenu()
+
         }
 
         findViewById<LinearLayout>(R.id.itemHistorial).setOnClickListener {
@@ -429,10 +437,7 @@ abstract class BaseMenuActivity : AppCompatActivity() {
             ocultarMenu()
         }
 
-        findViewById<LinearLayout>(R.id.itemAcerca).setOnClickListener {
-            onMenuAcercaSeleccionado()
-            ocultarMenu()
-        }
+
 
         findViewById<LinearLayout>(R.id.itemCerrarSesion).setOnClickListener {
             cerrarSesion()

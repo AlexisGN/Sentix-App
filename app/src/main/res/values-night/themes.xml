@@ -19,11 +19,25 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
 
-
         <!-- Sin ActionBar -->
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
 
+        <!-- Quitar transición entre Activities -->
+        <item name="android:windowAnimationStyle">@style/NoActivityAnimation</item>
+
+    </style>
+
+    <!-- Sin animación entre pantallas -->
+    <style name="NoActivityAnimation">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
     </style>
 
     <style name="Theme.Login_Guevara" parent="Base.Theme.Login_Guevara" />

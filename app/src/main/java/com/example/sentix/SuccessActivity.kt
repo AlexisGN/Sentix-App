@@ -23,13 +23,7 @@ class SuccessActivity : BaseMenuActivity() {
         txtNombrePrincipal.text = "Hola, $nombreMostrar"
     }
 
-    override fun onMenuEvaluacionSeleccionada() {
-        Toast.makeText(
-            this,
-            "Próximamente: evaluación emocional multimodal",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
+
 
     private fun obtenerNombreParaSaludo(cache: UsuarioCache): String {
         if (cache.nombre.isNotBlank()) {
