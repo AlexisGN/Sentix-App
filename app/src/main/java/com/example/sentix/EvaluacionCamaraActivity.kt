@@ -23,7 +23,12 @@ import java.util.concurrent.Executors
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
-
+import android.graphics.Rect
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.Face
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetector
+import com.google.mlkit.vision.face.FaceDetectorOptions
 class EvaluacionCamaraActivity : BaseMenuActivity() {
 
     private lateinit var previewCamara: PreviewView
@@ -35,7 +40,7 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var emotionClassifier: EmotionImageClassifier
-
+    private lateinit var faceDetector: FaceDetector
     private var resultadoFacialInterno: EmotionImageClassifier.ResultadoEmocion? = null
 
     /*
@@ -73,6 +78,16 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         emotionClassifier = EmotionImageClassifier(this)
+
+        val opcionesDetectorRostro = FaceDetectorOptions.Builder()
+            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+            .setMinFaceSize(0.18f)
+            .enableTracking()
+            .build()
+
+        faceDetector = FaceDetection.getClient(opcionesDetectorRostro)
 
         if (!modoDesarrollador) {
             txtResultadoDev.visibility = View.GONE
@@ -262,75 +277,110 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
 
     private fun analizarImagenCapturada(archivoFoto: File) {
         try {
-            val bitmapPreparado = prepararImagenParaModelo(archivoFoto)
+            val bitmapOriginal = BitmapFactory.decodeFile(archivoFoto.absolutePath)
 
-            if (bitmapPreparado == null) {
+            if (bitmapOriginal == null) {
                 runOnUiThread {
+                    procesandoImagen = false
                     btnCapturarImagen.isEnabled = true
                     txtEstadoCamara.text = "Imagen no válida"
-
-                    Toast.makeText(
-                        this,
-                        "No se pudo leer la imagen capturada.",
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
                 return
             }
 
-            val resultado = emotionClassifier.clasificar(bitmapPreparado)
-            resultadoFacialInterno = resultado
+            val bitmapOrientado = corregirOrientacionImagen(
+                bitmap = bitmapOriginal,
+                rutaImagen = archivoFoto.absolutePath
+            )
 
-            Log.d("CNN_SENTIX", "Clase facial: ${resultado.etiqueta}")
-            Log.d("CNN_SENTIX", "Clase traducida: ${resultado.etiquetaTraducida}")
-            Log.d("CNN_SENTIX", "Confianza: ${resultado.confianza}")
-            Log.d("CNN_SENTIX", "Probabilidades: ${resultado.probabilidades}")
+            val inputImage = InputImage.fromBitmap(bitmapOrientado, 0)
 
-            runOnUiThread {
-                txtEstadoCamara.text = "Imagen registrada"
-                btnCapturarImagen.isEnabled = true
-                btnContinuarTest.isEnabled = true
-                procesandoImagen = false
-                if (modoDesarrollador) {
-                    txtResultadoDev.text =
-                        "DEV\n" +
-                                "Usuario: ${emailActual.ifBlank { "sin correo" }}\n" +
-                                "Resultado facial: ${resultado.etiquetaTraducida}\n" +
-                                "Clase interna: ${resultado.etiqueta}\n" +
-                                "Confianza: ${"%.2f".format(resultado.confianza)}%\n\n" +
-                                "Probabilidades:\n" +
-                                resultado.probabilidades.entries.joinToString("\n") {
-                                    "${it.key}: ${"%.2f".format(it.value)}%"
-                                }
+            faceDetector.process(inputImage)
+                .addOnSuccessListener { rostros ->
+                    if (rostros.isEmpty()) {
+                        runOnUiThread {
+                            procesandoImagen = false
+                            btnCapturarImagen.isEnabled = true
+                            btnContinuarTest.isEnabled = false
+                            txtEstadoCamara.text = "Rostro no detectado"
+
+                            if (modoDesarrollador) {
+                                txtResultadoDev.text =
+                                    "DEV\nNo se detectó ningún rostro.\nIntenta mirar de frente y acercarte al marco."
+                            }
+                        }
+                        return@addOnSuccessListener
+                    }
+
+                    val rostroPrincipal = obtenerRostroPrincipal(rostros)
+
+                    val bitmapRostro = recortarRostroDetectado(
+                        bitmap = bitmapOrientado,
+                        rectRostro = rostroPrincipal.boundingBox
+                    )
+
+                    val resultado = emotionClassifier.clasificar(bitmapRostro)
+                    resultadoFacialInterno = resultado
+
+                    Log.d("CNN_SENTIX", "Rostro detectado: ${rostroPrincipal.boundingBox}")
+                    Log.d("CNN_SENTIX", "Clase facial: ${resultado.etiqueta}")
+                    Log.d("CNN_SENTIX", "Clase traducida: ${resultado.etiquetaTraducida}")
+                    Log.d("CNN_SENTIX", "Confianza: ${resultado.confianza}")
+                    Log.d("CNN_SENTIX", "Probabilidades: ${resultado.probabilidades}")
+
+                    runOnUiThread {
+                        txtEstadoCamara.text = "Imagen registrada"
+                        btnCapturarImagen.isEnabled = true
+                        btnContinuarTest.isEnabled = true
+                        procesandoImagen = false
+
+                        if (modoDesarrollador) {
+                            txtResultadoDev.text =
+                                "DEV\n" +
+                                        "Usuario: ${emailActual.ifBlank { "sin correo" }}\n" +
+                                        "Rostro detectado: sí\n" +
+                                        "Resultado facial: ${resultado.etiquetaTraducida}\n" +
+                                        "Clase interna: ${resultado.etiqueta}\n" +
+                                        "Confianza: ${"%.2f".format(resultado.confianza)}%\n\n" +
+                                        "Probabilidades:\n" +
+                                        resultado.probabilidades.entries.joinToString("\n") {
+                                            "${it.key}: ${"%.2f".format(it.value)}%"
+                                        }
+                        }
+                    }
                 }
-            }
+                .addOnFailureListener { e ->
+                    Log.e("MLKIT_SENTIX", "Error detectando rostro", e)
+
+                    runOnUiThread {
+                        procesandoImagen = false
+                        btnCapturarImagen.isEnabled = true
+                        btnContinuarTest.isEnabled = false
+                        txtEstadoCamara.text = "Error al detectar rostro"
+
+                        if (modoDesarrollador) {
+                            txtResultadoDev.text =
+                                "DEV\nError en ML Kit Face Detection:\n${e.message}"
+                        }
+                    }
+                }
 
         } catch (e: Exception) {
             Log.e("CNN_SENTIX", "Error al analizar imagen", e)
 
             runOnUiThread {
-                txtEstadoCamara.text = "Imagen registrada"
-                btnCapturarImagen.isEnabled = true
-                btnContinuarTest.isEnabled = true
                 procesandoImagen = false
+                btnCapturarImagen.isEnabled = true
+                btnContinuarTest.isEnabled = false
+                txtEstadoCamara.text = "Error de análisis"
+
+                if (modoDesarrollador) {
+                    txtResultadoDev.text =
+                        "DEV\nError general al analizar imagen:\n${e.message}"
+                }
             }
         }
     }
-
-    override fun onMenuEvaluacionSeleccionada() {
-        ocultarMenu()
-    }
-    private fun prepararImagenParaModelo(archivoFoto: File): Bitmap? {
-        val bitmapOriginal = BitmapFactory.decodeFile(archivoFoto.absolutePath) ?: return null
-
-        val bitmapOrientado = corregirOrientacionImagen(
-            bitmap = bitmapOriginal,
-            rutaImagen = archivoFoto.absolutePath
-        )
-
-        return recortarCentroTipoRostro(bitmapOrientado)
-    }
-
     private fun corregirOrientacionImagen(bitmap: Bitmap, rutaImagen: String): Bitmap {
         return try {
             val exif = ExifInterface(rutaImagen)
@@ -370,41 +420,60 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
         }
     }
 
-    private fun recortarCentroTipoRostro(bitmap: Bitmap): Bitmap {
-        /*
-         * Recorte central pensado para que la imagen se parezca más al dataset:
-         * rostro centrado, menos fondo y formato cuadrado.
-         */
+    private fun obtenerRostroPrincipal(rostros: List<Face>): Face {
+        return rostros.maxByOrNull { rostro ->
+            rostro.boundingBox.width() * rostro.boundingBox.height()
+        } ?: rostros.first()
+    }
 
-        val ancho = bitmap.width
-        val alto = bitmap.height
+    private fun recortarRostroDetectado(bitmap: Bitmap, rectRostro: Rect): Bitmap {
+        val anchoImagen = bitmap.width
+        val altoImagen = bitmap.height
 
-        val lado = minOf(ancho, alto)
-
-        /*
-         * Usamos un recorte un poco más pequeño que el lado mínimo
-         * para acercarnos al rostro y quitar fondo.
-         */
-        val ladoRecorte = (lado * 0.78f).toInt()
-
-        val x = ((ancho - ladoRecorte) / 2).coerceAtLeast(0)
+        val centroX = rectRostro.centerX()
+        val centroY = rectRostro.centerY()
 
         /*
-         * Subimos un poco el recorte porque el rostro suele estar más arriba
-         * que el centro exacto de la foto.
+         * Margen para que el recorte no sea solo ojos/nariz/boca.
+         * Incluye frente, mentón y un poco de contexto, parecido al dataset.
          */
-        val yCentro = ((alto - ladoRecorte) / 2).coerceAtLeast(0)
-        val y = (yCentro - (ladoRecorte * 0.10f).toInt())
-            .coerceIn(0, (alto - ladoRecorte).coerceAtLeast(0))
+        val ladoBase = maxOf(rectRostro.width(), rectRostro.height())
+        val ladoRecorte = (ladoBase * 1.55f).toInt()
+
+        var x = centroX - ladoRecorte / 2
+        var y = centroY - ladoRecorte / 2
+
+        /*
+         * Subimos un poco el recorte para incluir mejor frente y ojos.
+         */
+        y -= (ladoRecorte * 0.08f).toInt()
+
+        x = x.coerceIn(0, (anchoImagen - ladoRecorte).coerceAtLeast(0))
+        y = y.coerceIn(0, (altoImagen - ladoRecorte).coerceAtLeast(0))
+
+        val anchoFinal = ladoRecorte.coerceAtMost(anchoImagen - x)
+        val altoFinal = ladoRecorte.coerceAtMost(altoImagen - y)
+
+        val ladoFinal = minOf(anchoFinal, altoFinal)
+
+        Log.d(
+            "MLKIT_SENTIX",
+            "Recorte rostro -> x:$x y:$y lado:$ladoFinal rectOriginal:$rectRostro"
+        )
 
         return Bitmap.createBitmap(
             bitmap,
             x,
             y,
-            ladoRecorte,
-            ladoRecorte
+            ladoFinal,
+            ladoFinal
         )
     }
+
+    override fun onMenuEvaluacionSeleccionada() {
+        ocultarMenu()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -414,6 +483,9 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
 
         if (::emotionClassifier.isInitialized) {
             emotionClassifier.cerrar()
+        }
+        if (::faceDetector.isInitialized) {
+            faceDetector.close()
         }
     }
 }
