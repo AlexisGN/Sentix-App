@@ -29,6 +29,12 @@ import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.Paint
+import java.util.Locale
+
 class EvaluacionCamaraActivity : BaseMenuActivity() {
 
     private lateinit var previewCamara: PreviewView
@@ -319,7 +325,31 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
                         rectRostro = rostroPrincipal.boundingBox
                     )
 
-                    val resultado = emotionClassifier.clasificar(bitmapRostro)
+                    val preparacion = prepararRostroParaCnn(bitmapRostro)
+                    val bitmapParaCnn = preparacion.first
+                    val estadoIluminacion = preparacion.second
+
+                    if (bitmapParaCnn == null) {
+                        runOnUiThread {
+                            procesandoImagen = false
+                            btnCapturarImagen.isEnabled = true
+                            btnContinuarTest.isEnabled = false
+                            txtEstadoCamara.text = "Mejora la iluminación"
+
+                            if (modoDesarrollador) {
+                                txtResultadoDev.text =
+                                    "DEV\n" +
+                                            "Rostro detectado: sí\n" +
+                                            "Iluminación no aceptada\n" +
+                                            "Estado: $estadoIluminacion\n" +
+                                            "CNN: no ejecutado\n\n" +
+                                            "Busca más luz e intenta nuevamente."
+                            }
+                        }
+                        return@addOnSuccessListener
+                    }
+
+                    val resultado = emotionClassifier.clasificar(bitmapParaCnn)
                     resultadoFacialInterno = resultado
 
                     Log.d("CNN_SENTIX", "Rostro detectado: ${rostroPrincipal.boundingBox}")
@@ -339,6 +369,7 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
                                 "DEV\n" +
                                         "Usuario: ${emailActual.ifBlank { "sin correo" }}\n" +
                                         "Rostro detectado: sí\n" +
+                                        "Iluminación: $estadoIluminacion\n" +
                                         "Resultado facial: ${resultado.etiquetaTraducida}\n" +
                                         "Clase interna: ${resultado.etiqueta}\n" +
                                         "Confianza: ${"%.2f".format(resultado.confianza)}%\n\n" +
@@ -469,6 +500,260 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
             ladoFinal
         )
     }
+    private fun calcularBrilloPromedio(bitmap: Bitmap): Float {
+        /*
+         * Calcula brillo promedio del rostro.
+         * Rango aproximado:
+         * 0   = negro
+         * 255 = muy claro
+         */
+        val ancho = bitmap.width
+        val alto = bitmap.height
+
+        val escala = 4
+        val bitmapReducido = Bitmap.createScaledBitmap(
+            bitmap,
+            (ancho / escala).coerceAtLeast(1),
+            (alto / escala).coerceAtLeast(1),
+            true
+        )
+
+        var sumaBrillo = 0.0
+        var totalPixeles = 0
+
+        val pixels = IntArray(bitmapReducido.width * bitmapReducido.height)
+
+        bitmapReducido.getPixels(
+            pixels,
+            0,
+            bitmapReducido.width,
+            0,
+            0,
+            bitmapReducido.width,
+            bitmapReducido.height
+        )
+
+        for (pixel in pixels) {
+            val r = (pixel shr 16) and 0xFF
+            val g = (pixel shr 8) and 0xFF
+            val b = pixel and 0xFF
+
+            /*
+             * Fórmula de luminancia perceptual.
+             * Da más peso al verde porque el ojo humano lo percibe más.
+             */
+            val brillo = 0.299 * r + 0.587 * g + 0.114 * b
+
+            sumaBrillo += brillo
+            totalPixeles++
+        }
+
+        return if (totalPixeles > 0) {
+            (sumaBrillo / totalPixeles).toFloat()
+        } else {
+            0f
+        }
+    }
+
+    private fun ajustarIluminacionAdaptativa(bitmap: Bitmap, calidad: CalidadIluminacion): Bitmap {
+        /*
+         * Ajuste adaptativo:
+         * - Si está bajo de luz real, sube brillo suavemente.
+         * - Si sale con brillo alto por autoexposición, baja un poco brillo.
+         * - Mantiene colores naturales.
+         */
+        val bitmapAjustado = Bitmap.createBitmap(
+            bitmap.width,
+            bitmap.height,
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmapAjustado)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        val contraste: Float
+        val brillo: Float
+
+        when {
+            calidad.brilloPromedio < 90f -> {
+                contraste = 1.12f
+                brillo = 14f
+            }
+
+            calidad.brilloPromedio > 118f -> {
+                contraste = 1.08f
+                brillo = -12f
+            }
+
+            else -> {
+                contraste = 1.04f
+                brillo = 4f
+            }
+        }
+
+        val translate = (-0.5f * contraste + 0.5f) * 255f + brillo
+
+        val colorMatrix = ColorMatrix(
+            floatArrayOf(
+                contraste, 0f, 0f, 0f, translate,
+                0f, contraste, 0f, 0f, translate,
+                0f, 0f, contraste, 0f, translate,
+                0f, 0f, 0f, 1f, 0f
+            )
+        )
+
+        paint.colorFilter = ColorMatrixColorFilter(colorMatrix)
+        canvas.drawBitmap(bitmap, 0f, 0f, paint)
+
+        return bitmapAjustado
+    }
+    private fun obtenerZonaCentralRostro(bitmap: Bitmap): Bitmap {
+        /*
+         * Medimos solo la zona central del recorte, porque ahí está el rostro.
+         * Evitamos que pared, fondo o ropa alteren el promedio de iluminación.
+         */
+        val porcentaje = 0.62f
+
+        val anchoZona = (bitmap.width * porcentaje).toInt()
+        val altoZona = (bitmap.height * porcentaje).toInt()
+
+        val x = ((bitmap.width - anchoZona) / 2).coerceAtLeast(0)
+        val y = ((bitmap.height - altoZona) / 2).coerceAtLeast(0)
+
+        return Bitmap.createBitmap(
+            bitmap,
+            x,
+            y,
+            anchoZona.coerceAtMost(bitmap.width - x),
+            altoZona.coerceAtMost(bitmap.height - y)
+        )
+    }
+    private fun analizarCalidadIluminacion(bitmap: Bitmap): CalidadIluminacion {
+        /*
+         * Importante:
+         * Analizamos solo el centro del rostro, no todo el recorte.
+         */
+        val zonaRostro = obtenerZonaCentralRostro(bitmap)
+
+        val escala = 4
+
+        val bitmapReducido = Bitmap.createScaledBitmap(
+            zonaRostro,
+            (zonaRostro.width / escala).coerceAtLeast(1),
+            (zonaRostro.height / escala).coerceAtLeast(1),
+            true
+        )
+
+        val pixels = IntArray(bitmapReducido.width * bitmapReducido.height)
+
+        bitmapReducido.getPixels(
+            pixels,
+            0,
+            bitmapReducido.width,
+            0,
+            0,
+            bitmapReducido.width,
+            bitmapReducido.height
+        )
+
+        val luminancias = FloatArray(pixels.size)
+
+        var suma = 0f
+        var sombras = 0
+        var quemados = 0
+
+        for (i in pixels.indices) {
+            val pixel = pixels[i]
+
+            val r = (pixel shr 16) and 0xFF
+            val g = (pixel shr 8) and 0xFF
+            val b = pixel and 0xFF
+
+            val luminancia = (0.299f * r + 0.587f * g + 0.114f * b)
+
+            luminancias[i] = luminancia
+            suma += luminancia
+
+            if (luminancia < 55f) {
+                sombras++
+            }
+
+            if (luminancia > 225f) {
+                quemados++
+            }
+        }
+
+        val total = luminancias.size.coerceAtLeast(1)
+        val promedio = suma / total
+
+        var sumaDiferencias = 0f
+
+        for (valor in luminancias) {
+            val diferencia = valor - promedio
+            sumaDiferencias += diferencia * diferencia
+        }
+
+        val contraste = kotlin.math.sqrt(sumaDiferencias / total)
+
+        val porcentajeSombras = (sombras.toFloat() / total.toFloat()) * 100f
+        val porcentajeQuemados = (quemados.toFloat() / total.toFloat()) * 100f
+
+        return CalidadIluminacion(
+            brilloPromedio = promedio,
+            contraste = contraste,
+            porcentajeSombras = porcentajeSombras,
+            porcentajeQuemados = porcentajeQuemados
+        )
+    }
+    private fun prepararRostroParaCnn(bitmapRostro: Bitmap): Pair<Bitmap?, String> {
+        val calidad = analizarCalidadIluminacion(bitmapRostro)
+
+        val detalleCalidad = String.format(
+            Locale.US,
+            "brillo=%.1f contraste=%.1f sombras=%.1f%% quemados=%.1f%%",
+            calidad.brilloPromedio,
+            calidad.contraste,
+            calidad.porcentajeSombras,
+            calidad.porcentajeQuemados
+        )
+
+        Log.d("LUZ_SENTIX", detalleCalidad)
+
+        /*
+         * Reglas usando zona central del rostro:
+         *
+         * <= 118: imagen aceptable, pasa directo.
+         * > 118: puede ser autoexposición o luz rara, se ajusta suavemente.
+         *
+         * Se rechaza si:
+         * - hay demasiadas sombras reales en el rostro
+         * - hay zonas muy quemadas
+         * - el contraste es muy bajo
+         */
+        return when {
+            calidad.porcentajeSombras > 48f -> {
+                null to "rechazada:sombras_altas:$detalleCalidad"
+            }
+
+            calidad.porcentajeQuemados > 22f -> {
+                null to "rechazada:sobreexpuesta:$detalleCalidad"
+            }
+
+            calidad.contraste < 16f -> {
+                null to "rechazada:bajo_contraste:$detalleCalidad"
+            }
+
+            calidad.brilloPromedio <= 118f -> {
+                bitmapRostro to "normal:$detalleCalidad"
+            }
+
+            else -> {
+                val rostroAjustado = ajustarIluminacionAdaptativa(bitmapRostro, calidad)
+                rostroAjustado to "ajustada:$detalleCalidad"
+            }
+        }
+    }
+
 
     override fun onMenuEvaluacionSeleccionada() {
         ocultarMenu()
@@ -489,3 +774,10 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
         }
     }
 }
+
+data class CalidadIluminacion(
+    val brilloPromedio: Float,
+    val contraste: Float,
+    val porcentajeSombras: Float,
+    val porcentajeQuemados: Float
+)
