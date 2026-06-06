@@ -1,0 +1,28 @@
+{
+    "max_tokens": 10000,
+    "max_len": 50,
+    "embedding_dim": 96,
+    "num_classes": 6,
+    "labels": [
+        "aislamiento",
+        "bienestar",
+        "desmotivacion",
+        "estres_academico",
+        "neutral",
+        "preocupacion"
+    ],
+    "vocab_size": 397,
+    "input_dtype": "int32",
+    "model_type": "Embedding + Conv1D + GlobalMaxPooling",
+    "weights_finales_recomendados": {
+        "cnn_imagen": 0.2,
+        "test_emocional": 0.4,
+        "nlp_texto": 0.4
+    },
+    "normalizacion": {
+        "lowercase": true,
+        "remove_accents": true,
+        "replace_informal_words": true,
+        "remove_special_chars": true
+    }
+}

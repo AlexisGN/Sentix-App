@@ -1,0 +1,6 @@
+aislamiento
+bienestar
+desmotivacion
+estres_academico
+neutral
+preocupacion

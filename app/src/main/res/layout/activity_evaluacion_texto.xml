@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootEvaluacionTexto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,19 +21,90 @@
             android:id="@+id/txtTituloTexto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Análisis de texto"
+            android:text="Texto libre"
             android:textColor="@color/text_dark"
             android:textSize="32sp"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/txtSubtituloTexto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:lineSpacingExtra="3dp"
-            android:text="Aquí irá el análisis de texto con NLP entrenado."
+            android:text="Escribe brevemente cómo te has sentido últimamente."
             android:textColor="@color/text_soft"
             android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_success_notice"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_chat_sentix"
+                app:tint="@color/sentix_blue" />
+
+            <TextView
+                android:id="@+id/txtAvisoTexto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:lineSpacingExtra="3dp"
+                android:text="Puedes mencionar tus clases, descanso, responsabilidades o situaciones personales."
+                android:textColor="@color/text_dark"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edtTextoUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_notification_info_card"
+            android:gravity="top|start"
+            android:hint="Ejemplo: Me he sentido cansado por los trabajos, pero intento organizarme mejor..."
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLength="500"
+            android:minLines="5"
+            android:padding="16dp"
+            android:textColor="@color/text_dark"
+            android:textColorHint="@color/text_soft"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnAnalizarTexto"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_button"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:text="Analizar texto"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtResultadoDevTexto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_notification_info_card"
+            android:lineSpacingExtra="3dp"
+            android:padding="14dp"
+            android:text="DEV: esperando texto..."
+            android:textColor="@color/text_soft"
+            android:textSize="13sp" />
 
     </LinearLayout>
 

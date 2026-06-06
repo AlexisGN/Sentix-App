@@ -29,7 +29,7 @@ class EvaluacionTestActivity : BaseMenuActivity() {
         "¿Te has sentido agotado por tus actividades académicas?",
         "¿Has tenido dificultad para concentrarte en clases, tareas o estudios?",
         "¿Has sentido presión por cumplir con trabajos, exámenes o responsabilidades?",
-        "¿Has tenido problemas para dormir o descansar bien?",
+        "¿Has tenido problemas para dormir?",
         "¿Te has sentido preocupado por tu rendimiento académico?",
         "¿Has sentido que la presión social afecta tu estado de ánimo?",
         "¿Has perdido motivación para realizar actividades que antes disfrutabas?",
