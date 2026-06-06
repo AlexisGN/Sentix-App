@@ -49,6 +49,16 @@
         <activity
             android:name=".EvaluacionCamaraActivity"
             android:exported="false" />
+
+        <!-- Evaluación por test emocional -->
+        <activity
+            android:name=".EvaluacionTestActivity"
+            android:exported="false" />
+        <!-- Evaluación por texto / NLP -->
+        <activity
+            android:name=".EvaluacionTextoActivity"
+            android:exported="false" />
+
         <!-- Perfil de usuario -->
         <activity
             android:name=".CuentaActivity"

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootEvaluacionTest"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:id="@+id/contenedorTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="52dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="32dp">
+
+        <TextView
+            android:id="@+id/txtTituloTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test emocional"
+            android:textColor="@color/text_dark"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSubtituloTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:lineSpacingExtra="3dp"
+            android:text="Responde según cómo te has sentido recientemente."
+            android:textColor="@color/text_soft"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_success_notice"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/proteger"
+                app:tint="@color/sentix_blue" />
+
+            <TextView
+                android:id="@+id/txtAvisoTest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:lineSpacingExtra="3dp"
+                android:text="No hay respuestas correctas o incorrectas. Este test forma parte de una orientación preventiva."
+                android:textColor="@color/text_dark"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtProgresoTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:text="Pregunta 1 de 6"
+            android:textColor="@color/sentix_purple"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/cardPreguntaTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_success_feature_card"
+            android:elevation="2dp"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/txtPreguntaTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="4dp"
+                android:text="¿Te has sentido con poca energía últimamente?"
+                android:textColor="@color/text_dark"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/radioGroupOpciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/rbNunca"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Nunca"
+                    android:textColor="@color/text_dark"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/rbAveces"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="A veces"
+                    android:textColor="@color/text_dark"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/rbFrecuente"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Frecuentemente"
+                    android:textColor="@color/text_dark"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/rbCasiSiempre"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Casi siempre"
+                    android:textColor="@color/text_dark"
+                    android:textSize="16sp" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAnteriorPregunta"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button_outline_sentix"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:enabled="false"
+                android:text="Anterior"
+                android:textAllCaps="false"
+                android:textColor="@color/sentix_blue"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnSiguientePregunta"
+                android:layout_width="0dp"
+                android:layout_height="54dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:text="Siguiente"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtResultadoDevTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_notification_info_card"
+            android:lineSpacingExtra="3dp"
+            android:padding="14dp"
+            android:text="DEV: esperando respuestas..."
+            android:textColor="@color/text_soft"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</ScrollView>

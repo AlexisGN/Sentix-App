@@ -1,5 +1,5 @@
 package com.example.sentix
-
+import android.content.Intent
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -135,20 +135,20 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
                 return@setOnClickListener
             }
 
-            /*
-             * Aquí luego abriremos EvaluacionTestActivity.
-             * Por ahora confirmamos que el resultado facial ya quedó listo.
-             */
-            Toast.makeText(
-                this,
-                "Imagen registrada. Siguiente paso: test emocional.",
-                Toast.LENGTH_LONG
-            ).show()
+            val intent = Intent(this, EvaluacionTestActivity::class.java)
+            intent.putExtra("uid", uidActual)
+            intent.putExtra("email", emailActual)
+
+            intent.putExtra("emocionFacial", resultado.etiqueta)
+            intent.putExtra("emocionFacialTraducida", resultado.etiquetaTraducida)
+            intent.putExtra("confianzaFacial", resultado.confianza)
 
             Log.d(
                 "EVALUACION_FLUJO",
-                "UID: $uidActual, Email: $emailActual, Resultado facial: ${resultado.etiqueta} - ${resultado.confianza}%"
+                "Pasando al test -> UID: $uidActual, Email: $emailActual, Facial: ${resultado.etiqueta} - ${resultado.confianza}%"
             )
+
+            startActivity(intent)
         }
     }
 
