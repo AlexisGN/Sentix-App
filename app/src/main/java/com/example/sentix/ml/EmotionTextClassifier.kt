@@ -58,7 +58,9 @@ class EmotionTextClassifier(private val context: Context) {
     fun clasificar(textoOriginal: String): ResultadoTexto {
         val textoNormalizado = normalizarTexto(textoOriginal)
         val vector = textoAVector(textoNormalizado)
-
+        Log.d("NLP_DEBUG", "Texto original: $textoOriginal")
+        Log.d("NLP_DEBUG", "Texto normalizado: $textoNormalizado")
+        Log.d("NLP_DEBUG", "Vector primeros 20: ${vector.take(20)}")
         val inputBuffer = ByteBuffer.allocateDirect(4 * maxLen)
         inputBuffer.order(ByteOrder.nativeOrder())
 
@@ -205,10 +207,24 @@ class EmotionTextClassifier(private val context: Context) {
             }
     }
     private fun cargarVocabularioAsset(nombreArchivo: String): List<String> {
-        return context.assets.open(nombreArchivo)
+        val lineas = context.assets.open(nombreArchivo)
             .bufferedReader(Charsets.UTF_8)
             .readLines()
             .map { it.trim() }
+
+        /*
+         * TextVectorization de TensorFlow usa:
+         * índice 0 = ""
+         * índice 1 = "[UNK]"
+         *
+         * Si el archivo perdió la primera línea vacía al copiarlo,
+         * la restauramos para que los índices coincidan con Python.
+         */
+        return if (lineas.isNotEmpty() && lineas[0].isNotBlank()) {
+            listOf("") + lineas
+        } else {
+            lineas
+        }
     }
 
     private fun cargarJsonAsset(nombreArchivo: String): JSONObject {

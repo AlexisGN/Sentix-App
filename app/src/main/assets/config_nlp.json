@@ -1,6 +1,6 @@
 {
-    "max_tokens": 10000,
-    "max_len": 50,
+    "max_tokens": 16000,
+    "max_len": 60,
     "embedding_dim": 96,
     "num_classes": 6,
     "labels": [
@@ -11,7 +11,7 @@
         "neutral",
         "preocupacion"
     ],
-    "vocab_size": 397,
+    "vocab_size": 659,
     "input_dtype": "int32",
     "model_type": "Embedding + Conv1D + GlobalMaxPooling",
     "weights_finales_recomendados": {
