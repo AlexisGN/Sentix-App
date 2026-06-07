@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:lineSpacingExtra="3dp"
-            android:text="Responde según cómo te has sentido recientemente."
+            android:text="Responde de acuerdo a cómo te has sentido recientemente."
             android:textColor="@color/text_soft"
             android:textSize="16sp" />
 
@@ -59,7 +59,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:lineSpacingExtra="3dp"
-                android:text="No hay respuestas correctas o incorrectas. Este test forma parte de una orientación preventiva."
+                android:text="No hay respuestas correctas o incorrectas. Solo elige la opción más cercana a tu experiencia."
                 android:textColor="@color/text_dark"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
-            android:text="Pregunta 1 de 6"
+            android:text="Pregunta 1 de 10"
             android:textColor="@color/sentix_purple"
             android:textSize="15sp"
             android:textStyle="bold" />
@@ -89,7 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="4dp"
-                android:text="¿Te has sentido con poca energía últimamente?"
+                android:text="¿Te has sentido agotado por tus actividades académicas?"
                 android:textColor="@color/text_dark"
                 android:textSize="21sp"
                 android:textStyle="bold" />
@@ -138,6 +138,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/contenedorBotonesTest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -152,18 +153,18 @@
                 android:background="@drawable/bg_button_outline_sentix"
                 android:backgroundTint="@null"
                 app:backgroundTint="@null"
-                android:enabled="false"
                 android:text="Anterior"
                 android:textAllCaps="false"
                 android:textColor="@color/sentix_blue"
                 android:textSize="15sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btnSiguientePregunta"
                 android:layout_width="0dp"
                 android:layout_height="54dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="0dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_button"
                 android:backgroundTint="@null"
@@ -176,6 +177,7 @@
 
         </LinearLayout>
 
+        <!-- Oculto para conservar compatibilidad con el Activity -->
         <TextView
             android:id="@+id/txtResultadoDevTest"
             android:layout_width="match_parent"
@@ -184,9 +186,10 @@
             android:background="@drawable/bg_notification_info_card"
             android:lineSpacingExtra="3dp"
             android:padding="14dp"
-            android:text="DEV: esperando respuestas..."
+            android:text=""
             android:textColor="@color/text_soft"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

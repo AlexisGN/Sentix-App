@@ -7,6 +7,8 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
+import android.view.View
+import android.view.ViewGroup
 
 class EvaluacionTestActivity : BaseMenuActivity() {
 
@@ -21,7 +23,7 @@ class EvaluacionTestActivity : BaseMenuActivity() {
     private lateinit var btnSiguientePregunta: Button
     private lateinit var txtResultadoDevTest: TextView
 
-    private val modoDesarrollador = true
+    private val modoDesarrollador = false
 
     private var indicePreguntaActual = 0
 
@@ -92,6 +94,8 @@ class EvaluacionTestActivity : BaseMenuActivity() {
         rbAveces.text = "A veces"
         rbFrecuente.text = "Frecuentemente"
         rbCasiSiempre.text = "Casi siempre"
+
+        txtResultadoDevTest.visibility = View.GONE
     }
 
     private fun cargarDatosUsuarioLocal() {
@@ -114,14 +118,10 @@ class EvaluacionTestActivity : BaseMenuActivity() {
         emocionFacialTraducida = intent.getStringExtra("emocionFacialTraducida") ?: ""
         confianzaFacial = intent.getFloatExtra("confianzaFacial", 0f)
 
-        if (modoDesarrollador) {
-            txtResultadoDevTest.text =
-                "DEV\n" +
-                        "Resultado facial recibido:\n" +
-                        "Clase interna: ${emocionFacial.ifBlank { "sin dato" }}\n" +
-                        "Clase visible: ${emocionFacialTraducida.ifBlank { "sin dato" }}\n" +
-                        "Confianza: ${"%.2f".format(confianzaFacial)}%"
-        }
+        Log.d(
+            "TEST_SENTIX",
+            "Facial recibido -> $emocionFacial / $emocionFacialTraducida / $confianzaFacial"
+        )
     }
 
     private fun configurarEventos() {
@@ -164,9 +164,27 @@ class EvaluacionTestActivity : BaseMenuActivity() {
         txtProgresoTest.text = "Pregunta ${indicePreguntaActual + 1} de ${preguntas.size}"
         txtPreguntaTest.text = preguntas[indicePreguntaActual]
 
-        btnAnteriorPregunta.isEnabled = indicePreguntaActual > 0
+        val esPrimeraPregunta = indicePreguntaActual == 0
+        val esUltimaPregunta = indicePreguntaActual == preguntas.lastIndex
+
+        if (esPrimeraPregunta) {
+            btnAnteriorPregunta.visibility = View.GONE
+            btnAnteriorPregunta.isEnabled = false
+
+            val params = btnSiguientePregunta.layoutParams as ViewGroup.MarginLayoutParams
+            params.marginStart = 0
+            btnSiguientePregunta.layoutParams = params
+        } else {
+            btnAnteriorPregunta.visibility = View.VISIBLE
+            btnAnteriorPregunta.isEnabled = true
+
+            val params = btnSiguientePregunta.layoutParams as ViewGroup.MarginLayoutParams
+            params.marginStart = dpToPx(8)
+            btnSiguientePregunta.layoutParams = params
+        }
+
         btnSiguientePregunta.text =
-            if (indicePreguntaActual == preguntas.lastIndex) {
+            if (esUltimaPregunta) {
                 "Finalizar"
             } else {
                 "Siguiente"
@@ -189,6 +207,9 @@ class EvaluacionTestActivity : BaseMenuActivity() {
 
         actualizarDev()
     }
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
+    }
 
     private fun obtenerPuntajeSeleccionado(checkedId: Int): Int {
         return when (checkedId) {
@@ -210,11 +231,6 @@ class EvaluacionTestActivity : BaseMenuActivity() {
 
     private fun finalizarTest() {
         if (respuestas.any { it == -1 }) {
-            Toast.makeText(
-                this,
-                "Responde todas las preguntas antes de continuar.",
-                Toast.LENGTH_SHORT
-            ).show()
             return
         }
 
@@ -273,6 +289,7 @@ class EvaluacionTestActivity : BaseMenuActivity() {
     private fun actualizarDev() {
         if (!modoDesarrollador) {
             txtResultadoDevTest.text = ""
+            txtResultadoDevTest.visibility = View.GONE
             return
         }
 
@@ -281,6 +298,7 @@ class EvaluacionTestActivity : BaseMenuActivity() {
         val puntajeMaximo = preguntas.size * 3
         val nivelParcial = calcularNivelTest(puntajeParcial)
 
+        txtResultadoDevTest.visibility = View.VISIBLE
         txtResultadoDevTest.text =
             "DEV\n" +
                     "Facial: ${emocionFacialTraducida.ifBlank { "sin dato" }} " +

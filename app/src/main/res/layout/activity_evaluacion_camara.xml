@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:lineSpacingExtra="2dp"
-            android:text="Coloca tu rostro dentro del marco."
+            android:text="Ubica tu rostro dentro del marco para iniciar la evaluación."
             android:textColor="@color/text_soft"
             android:textSize="16sp" />
 
@@ -121,6 +121,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+        <!-- Se mantiene oculto para no romper referencias del Activity -->
         <Button
             android:id="@+id/btnContinuarTest"
             android:layout_width="match_parent"
@@ -134,8 +135,10 @@
             android:textAllCaps="false"
             android:textColor="@color/sentix_blue"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
+        <!-- Se mantiene oculto para conservar la lógica interna sin mostrar DEV -->
         <TextView
             android:id="@+id/txtResultadoDev"
             android:layout_width="match_parent"
@@ -144,9 +147,10 @@
             android:background="@drawable/bg_notification_info_card"
             android:lineSpacingExtra="3dp"
             android:padding="14dp"
-            android:text="DEV: esperando captura..."
+            android:text=""
             android:textColor="@color/text_soft"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

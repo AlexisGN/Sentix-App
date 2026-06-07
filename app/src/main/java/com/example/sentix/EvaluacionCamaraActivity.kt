@@ -54,7 +54,7 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
      * true  = muestra emoción y confianza para pruebas.
      * false = oculta el resultado parcial al usuario final.
      */
-    private val modoDesarrollador = true
+    private val modoDesarrollador = false
     private var procesandoImagen = false
     private val pedirPermisoCamara =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { permitido ->
@@ -247,6 +247,7 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
         }
 
         procesandoImagen = true
+        resultadoFacialInterno = null
         btnCapturarImagen.isEnabled = false
         btnContinuarTest.isEnabled = false
         txtEstadoCamara.text = "Analizando..."
@@ -280,7 +281,23 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
             }
         )
     }
+    private fun irAlTestConResultado(resultado: EmotionImageClassifier.ResultadoEmocion) {
+        val intent = Intent(this, EvaluacionTestActivity::class.java)
 
+        intent.putExtra("uid", uidActual)
+        intent.putExtra("email", emailActual)
+
+        intent.putExtra("emocionFacial", resultado.etiqueta)
+        intent.putExtra("emocionFacialTraducida", resultado.etiquetaTraducida)
+        intent.putExtra("confianzaFacial", resultado.confianza)
+
+        Log.d(
+            "EVALUACION_FLUJO",
+            "Pasando al test -> UID: $uidActual, Email: $emailActual, Facial: ${resultado.etiqueta} - ${resultado.confianza}%"
+        )
+
+        startActivity(intent)
+    }
     private fun analizarImagenCapturada(archivoFoto: File) {
         try {
             val bitmapOriginal = BitmapFactory.decodeFile(archivoFoto.absolutePath)
@@ -288,7 +305,9 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
             if (bitmapOriginal == null) {
                 runOnUiThread {
                     procesandoImagen = false
+                    resultadoFacialInterno = null
                     btnCapturarImagen.isEnabled = true
+                    btnContinuarTest.isEnabled = false
                     txtEstadoCamara.text = "Imagen no válida"
                 }
                 return
@@ -303,17 +322,20 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
 
             faceDetector.process(inputImage)
                 .addOnSuccessListener { rostros ->
+
                     if (rostros.isEmpty()) {
                         runOnUiThread {
                             procesandoImagen = false
+                            resultadoFacialInterno = null
                             btnCapturarImagen.isEnabled = true
                             btnContinuarTest.isEnabled = false
                             txtEstadoCamara.text = "Rostro no detectado"
 
-                            if (modoDesarrollador) {
-                                txtResultadoDev.text =
-                                    "DEV\nNo se detectó ningún rostro.\nIntenta mirar de frente y acercarte al marco."
-                            }
+                            Toast.makeText(
+                                this,
+                                "Ubica tu rostro dentro del marco e intenta nuevamente.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                         return@addOnSuccessListener
                     }
@@ -330,21 +352,20 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
                     val estadoIluminacion = preparacion.second
 
                     if (bitmapParaCnn == null) {
+                        Log.d("LUZ_SENTIX", "Imagen rechazada: $estadoIluminacion")
+
                         runOnUiThread {
                             procesandoImagen = false
+                            resultadoFacialInterno = null
                             btnCapturarImagen.isEnabled = true
                             btnContinuarTest.isEnabled = false
                             txtEstadoCamara.text = "Mejora la iluminación"
 
-                            if (modoDesarrollador) {
-                                txtResultadoDev.text =
-                                    "DEV\n" +
-                                            "Rostro detectado: sí\n" +
-                                            "Iluminación no aceptada\n" +
-                                            "Estado: $estadoIluminacion\n" +
-                                            "CNN: no ejecutado\n\n" +
-                                            "Busca más luz e intenta nuevamente."
-                            }
+                            Toast.makeText(
+                                this,
+                                "Busca mejor iluminación e intenta nuevamente.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                         return@addOnSuccessListener
                     }
@@ -353,6 +374,7 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
                     resultadoFacialInterno = resultado
 
                     Log.d("CNN_SENTIX", "Rostro detectado: ${rostroPrincipal.boundingBox}")
+                    Log.d("CNN_SENTIX", "Iluminación: $estadoIluminacion")
                     Log.d("CNN_SENTIX", "Clase facial: ${resultado.etiqueta}")
                     Log.d("CNN_SENTIX", "Clase traducida: ${resultado.etiquetaTraducida}")
                     Log.d("CNN_SENTIX", "Confianza: ${resultado.confianza}")
@@ -361,23 +383,15 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
                     runOnUiThread {
                         txtEstadoCamara.text = "Imagen registrada"
                         btnCapturarImagen.isEnabled = true
-                        btnContinuarTest.isEnabled = true
+                        btnContinuarTest.isEnabled = false
                         procesandoImagen = false
 
-                        if (modoDesarrollador) {
-                            txtResultadoDev.text =
-                                "DEV\n" +
-                                        "Usuario: ${emailActual.ifBlank { "sin correo" }}\n" +
-                                        "Rostro detectado: sí\n" +
-                                        "Iluminación: $estadoIluminacion\n" +
-                                        "Resultado facial: ${resultado.etiquetaTraducida}\n" +
-                                        "Clase interna: ${resultado.etiqueta}\n" +
-                                        "Confianza: ${"%.2f".format(resultado.confianza)}%\n\n" +
-                                        "Probabilidades:\n" +
-                                        resultado.probabilidades.entries.joinToString("\n") {
-                                            "${it.key}: ${"%.2f".format(it.value)}%"
-                                        }
-                        }
+                        /*
+                         * Modo usuario final:
+                         * No mostramos resultado CNN.
+                         * Pasamos directamente al test emocional.
+                         */
+                        irAlTestConResultado(resultado)
                     }
                 }
                 .addOnFailureListener { e ->
@@ -385,14 +399,16 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
 
                     runOnUiThread {
                         procesandoImagen = false
+                        resultadoFacialInterno = null
                         btnCapturarImagen.isEnabled = true
                         btnContinuarTest.isEnabled = false
-                        txtEstadoCamara.text = "Error al detectar rostro"
+                        txtEstadoCamara.text = "Intenta nuevamente"
 
-                        if (modoDesarrollador) {
-                            txtResultadoDev.text =
-                                "DEV\nError en ML Kit Face Detection:\n${e.message}"
-                        }
+                        Toast.makeText(
+                            this,
+                            "No se pudo validar el rostro. Intenta otra vez.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
@@ -401,14 +417,16 @@ class EvaluacionCamaraActivity : BaseMenuActivity() {
 
             runOnUiThread {
                 procesandoImagen = false
+                resultadoFacialInterno = null
                 btnCapturarImagen.isEnabled = true
                 btnContinuarTest.isEnabled = false
-                txtEstadoCamara.text = "Error de análisis"
+                txtEstadoCamara.text = "Intenta nuevamente"
 
-                if (modoDesarrollador) {
-                    txtResultadoDev.text =
-                        "DEV\nError general al analizar imagen:\n${e.message}"
-                }
+                Toast.makeText(
+                    this,
+                    "No se pudo analizar la imagen. Intenta otra vez.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
