@@ -75,7 +75,10 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     }
 
     open fun onMenuRecomendacionesSeleccionada() {
-        Toast.makeText(this, "Próximamente: Recomendaciones", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, RecomendacionesActivity::class.java)
+        intent.putExtra("uid", uidActual)
+        intent.putExtra("email", emailActual)
+        startActivity(intent)
     }
 
     open fun onMenuSeguimientoSeleccionado() {

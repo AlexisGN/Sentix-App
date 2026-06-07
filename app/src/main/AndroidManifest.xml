@@ -65,6 +65,9 @@
         <activity
             android:name=".HistorialEmocionalActivity"
             android:exported="false" />
+        <activity
+            android:name=".RecomendacionesActivity"
+            android:exported="false" />
 
         <!-- Perfil de usuario -->
         <activity
