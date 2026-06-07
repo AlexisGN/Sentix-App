@@ -86,7 +86,10 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     }
 
     open fun onMenuAlertasSeleccionado() {
-        Toast.makeText(this, "Próximamente: Alertas de riesgo", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, AlertasPreventivasActivity::class.java)
+        intent.putExtra("uid", uidActual)
+        intent.putExtra("email", emailActual)
+        startActivity(intent)
     }
 
     open fun onMenuAcercaSeleccionado() {

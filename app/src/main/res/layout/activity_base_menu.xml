@@ -299,7 +299,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
-                            android:text="Alertas de riesgo"
+                            android:text="Alertas preventivas"
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             android:textStyle="bold" />
