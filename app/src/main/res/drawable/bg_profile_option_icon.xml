@@ -1,9 +1,17 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <gradient
-        android:angle="45"
-        android:startColor="@color/sentix_blue"
-        android:centerColor="@color/sentix_purple"
-        android:endColor="@color/sentix_cyan" />
-</shape>
+    <!-- PRESIONADO -->
+    <item android:state_pressed="true">
+        <shape android:shape="oval">
+            <solid android:color="#1E40AF"/>
+        </shape>
+    </item>
+
+    <!-- NORMAL -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#3B82F6"/>
+        </shape>
+    </item>
+
+</selector>

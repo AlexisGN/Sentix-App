@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.example.sentix.ml.EmotionTextClassifier
 import android.content.Intent
 import android.view.View
+import com.example.sentix.data.FirebaseHistorialHelper
 
 class EvaluacionTextoActivity : BaseMenuActivity() {
 
@@ -133,7 +134,14 @@ class EvaluacionTextoActivity : BaseMenuActivity() {
             Log.d("RESULTADO_SENTIX", "Puntaje final: ${combinado.puntajeFinal}")
             Log.d("RESULTADO_SENTIX", "Nivel final: ${combinado.nivelFinal}")
 
+            guardarResultadoEnSegundoPlano(
+                textoUsuario = texto,
+                resultadoTexto = resultado,
+                combinado = combinado
+            )
+
             irAResultadoFinal(
+                idEvaluacion = "",
                 textoUsuario = texto,
                 resultadoTexto = resultado,
                 combinado = combinado
@@ -152,12 +160,57 @@ class EvaluacionTextoActivity : BaseMenuActivity() {
             btnAnalizarTexto.text = "Finalizar evaluación"
         }
     }
+
+    private fun guardarResultadoEnSegundoPlano(
+        textoUsuario: String,
+        resultadoTexto: EmotionTextClassifier.ResultadoTexto,
+        combinado: ResultadoCombinado
+    ) {
+        FirebaseHistorialHelper.guardarEvaluacionEmocional(
+            uid = uidActual,
+            email = emailActual,
+
+            nivelFinal = combinado.nivelFinal,
+            puntajeFinalInterno = combinado.puntajeFinal,
+
+            emocionFacial = emocionFacial,
+            emocionFacialTraducida = emocionFacialTraducida,
+            confianzaFacial = confianzaFacial,
+
+            puntajeTest = puntajeTest,
+            puntajeMaximoTest = puntajeMaximoTest,
+            nivelTest = nivelTest,
+            nivelTestVisible = nivelTestVisible,
+            respuestasTest = respuestasTest,
+
+            textoUsuario = textoUsuario,
+            textoNormalizado = resultadoTexto.textoNormalizado,
+            etiquetaNlp = resultadoTexto.etiqueta,
+            etiquetaNlpTraducida = resultadoTexto.etiquetaTraducida,
+            confianzaNlp = resultadoTexto.confianza,
+
+            puntajeFacial = combinado.puntajeFacial,
+            puntajeTestNormalizado = combinado.puntajeTest,
+            puntajeNlp = combinado.puntajeNlp,
+
+            onSuccess = { idEvaluacion ->
+                Log.d("HISTORIAL_SENTIX", "Evaluación guardada en segundo plano: $idEvaluacion")
+            },
+
+            onError = { e ->
+                Log.e("HISTORIAL_SENTIX", "No se pudo guardar evaluación en segundo plano", e)
+            }
+        )
+    }
     private fun irAResultadoFinal(
+        idEvaluacion: String,
         textoUsuario: String,
         resultadoTexto: EmotionTextClassifier.ResultadoTexto,
         combinado: ResultadoCombinado
     ) {
         val intent = Intent(this, ResultadoEvaluacionActivity::class.java)
+
+        intent.putExtra("idEvaluacion", idEvaluacion)
 
         intent.putExtra("uid", uidActual)
         intent.putExtra("email", emailActual)
@@ -185,24 +238,10 @@ class EvaluacionTextoActivity : BaseMenuActivity() {
         intent.putExtra("nivelFinal", combinado.nivelFinal)
 
         startActivity(intent)
+        finish()
     }
 
-    private fun mostrarDevInicial() {
-        txtResultadoDevTexto.text = ""
-        txtResultadoDevTexto.visibility = View.GONE
-    }
 
-    private fun traducirEtiqueta(etiqueta: String): String {
-        return when (etiqueta) {
-            "bienestar" -> "Bienestar"
-            "neutral" -> "Neutral"
-            "estres_academico" -> "Estrés académico"
-            "preocupacion" -> "Preocupación"
-            "desmotivacion" -> "Desmotivación"
-            "aislamiento" -> "Aislamiento"
-            else -> etiqueta
-        }
-    }
     private fun obtenerPuntajeFacial(etiqueta: String, confianza: Float): Float {
         /*
          * CNN tiene poco peso. Esta función convierte la emoción facial
@@ -253,13 +292,13 @@ class EvaluacionTextoActivity : BaseMenuActivity() {
         /*
          * Pesos definidos:
          * CNN imagen = 10%
-         * Test emocional = 45%
-         * NLP texto = 45%
+         * Test emocional = 60%
+         * NLP texto = 30%
          */
         val resultadoFinal = (
                 puntajeFacial * 0.10f +
-                        puntajeTestNormalizado * 0.45f +
-                        puntajeNlp * 0.45f
+                        puntajeTestNormalizado * 0.60f +
+                        puntajeNlp * 0.30f
                 ).coerceIn(0f, 100f)
 
         val nivelFinal = when {

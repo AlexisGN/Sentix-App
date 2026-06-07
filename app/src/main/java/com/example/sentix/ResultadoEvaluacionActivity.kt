@@ -431,14 +431,14 @@ class ResultadoEvaluacionActivity : BaseMenuActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
             finish()
+            ocultarMenu()
         }
 
         btnVerHistorial.setOnClickListener {
-            Toast.makeText(
-                this,
-                "Próximamente podrás revisar tu historial emocional.",
-                Toast.LENGTH_SHORT
-            ).show()
+            val intent = Intent(this, HistorialEmocionalActivity::class.java)
+            intent.putExtra("uid", uidActual)
+            intent.putExtra("email", emailActual)
+            startActivity(intent)
         }
     }
 

@@ -68,7 +68,10 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     }
 
     open fun onMenuHistorialSeleccionado() {
-        contarHistorialEmocional()
+        val intent = Intent(this, HistorialEmocionalActivity::class.java)
+        intent.putExtra("uid", uidActual)
+        intent.putExtra("email", emailActual)
+        startActivity(intent)
     }
 
     open fun onMenuRecomendacionesSeleccionada() {
