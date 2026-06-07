@@ -71,6 +71,9 @@
         <activity
             android:name=".AlertasPreventivasActivity"
             android:exported="false" />
+        <activity
+            android:name=".AcercaSentixActivity"
+            android:exported="false" />
 
         <!-- Perfil de usuario -->
         <activity

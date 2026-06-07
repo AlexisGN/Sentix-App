@@ -12,13 +12,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.example.sentix.data.FirebaseAuthHelper
 import com.example.sentix.data.FirebaseUserHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.math.roundToInt
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.signature.ObjectKey
 
 abstract class BaseMenuActivity : AppCompatActivity() {
 
@@ -46,6 +46,9 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     private lateinit var txtCorreoMenu: TextView
     private lateinit var imgPerfilMenu: ImageView
 
+    private lateinit var itemInicio: LinearLayout
+    private lateinit var itemAcercaSentix: LinearLayout
+
     private var menuAbierto = false
     private var hiddenTranslationX = 0f
 
@@ -54,6 +57,18 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     open fun onContenidoCreado() {}
 
     open fun onUsuarioActualizado(cache: UsuarioCache) {}
+
+    open fun onMenuInicioSeleccionado() {
+        if (this is SuccessActivity) {
+            ocultarMenu()
+            return
+        }
+
+        val intent = Intent(this, SuccessActivity::class.java)
+        intent.putExtra("uid", uidActual)
+        intent.putExtra("email", emailActual)
+        startActivity(intent)
+    }
 
     open fun onMenuEvaluacionSeleccionada() {
         if (this is EvaluacionCamaraActivity) {
@@ -68,6 +83,11 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     }
 
     open fun onMenuHistorialSeleccionado() {
+        if (this is HistorialEmocionalActivity) {
+            ocultarMenu()
+            return
+        }
+
         val intent = Intent(this, HistorialEmocionalActivity::class.java)
         intent.putExtra("uid", uidActual)
         intent.putExtra("email", emailActual)
@@ -75,29 +95,46 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     }
 
     open fun onMenuRecomendacionesSeleccionada() {
+        if (this is RecomendacionesActivity) {
+            ocultarMenu()
+            return
+        }
+
         val intent = Intent(this, RecomendacionesActivity::class.java)
         intent.putExtra("uid", uidActual)
         intent.putExtra("email", emailActual)
         startActivity(intent)
     }
 
-    open fun onMenuSeguimientoSeleccionado() {
-        Toast.makeText(this, "Próximamente: Seguimiento emocional", Toast.LENGTH_SHORT).show()
-    }
-
     open fun onMenuAlertasSeleccionado() {
+        if (this is AlertasPreventivasActivity) {
+            ocultarMenu()
+            return
+        }
+
         val intent = Intent(this, AlertasPreventivasActivity::class.java)
         intent.putExtra("uid", uidActual)
         intent.putExtra("email", emailActual)
         startActivity(intent)
     }
 
+    open fun onMenuAcercaSentixSeleccionado() {
+        if (this is AcercaSentixActivity) {
+            ocultarMenu()
+            return
+        }
+
+        val intent = Intent(this, AcercaSentixActivity::class.java)
+        intent.putExtra("uid", uidActual)
+        intent.putExtra("email", emailActual)
+        startActivity(intent)
+    }
+
+    /*
+     * Se deja este método por compatibilidad si alguna parte antigua del código lo llama.
+     */
     open fun onMenuAcercaSeleccionado() {
-        Toast.makeText(
-            this,
-            "Sentix brinda apoyo preventivo y no reemplaza atención profesional.",
-            Toast.LENGTH_LONG
-        ).show()
+        onMenuAcercaSentixSeleccionado()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -157,6 +194,9 @@ abstract class BaseMenuActivity : AppCompatActivity() {
         txtNombreMenu = findViewById(R.id.txtNombreMenu)
         txtCorreoMenu = findViewById(R.id.txtCorreoMenu)
         imgPerfilMenu = findViewById(R.id.imgPerfilMenu)
+
+        itemInicio = findViewById(R.id.itemInicio)
+        itemAcercaSentix = findViewById(R.id.itemAcercaSentix)
     }
 
     private fun cargarContenido() {
@@ -252,6 +292,7 @@ abstract class BaseMenuActivity : AppCompatActivity() {
             imgPerfilMenu.setImageResource(R.drawable.ic_usermenu)
         }
     }
+
     protected fun cargarDatosUsuarioDesdeFirebase() {
         if (uidActual.isEmpty()) {
             val uidAuth = FirebaseAuthHelper.obtenerUidActual()
@@ -373,7 +414,6 @@ abstract class BaseMenuActivity : AppCompatActivity() {
                     .error(R.drawable.ic_usermenu)
                     .into(imgPerfilMenu)
             }
-
         } else {
             imgPerfilMenu.setImageResource(R.drawable.ic_usermenu)
         }
@@ -421,9 +461,14 @@ abstract class BaseMenuActivity : AppCompatActivity() {
             ocultarMenu()
         }
 
+        itemInicio.setOnClickListener {
+            onMenuInicioSeleccionado()
+            ocultarMenu()
+        }
+
         findViewById<LinearLayout>(R.id.itemEvaluacion).setOnClickListener {
             onMenuEvaluacionSeleccionada()
-
+            ocultarMenu()
         }
 
         findViewById<LinearLayout>(R.id.itemHistorial).setOnClickListener {
@@ -436,17 +481,15 @@ abstract class BaseMenuActivity : AppCompatActivity() {
             ocultarMenu()
         }
 
-        findViewById<LinearLayout>(R.id.itemSeguimiento).setOnClickListener {
-            onMenuSeguimientoSeleccionado()
-            ocultarMenu()
-        }
-
         findViewById<LinearLayout>(R.id.itemAlertas).setOnClickListener {
             onMenuAlertasSeleccionado()
             ocultarMenu()
         }
 
-
+        itemAcercaSentix.setOnClickListener {
+            onMenuAcercaSentixSeleccionado()
+            ocultarMenu()
+        }
 
         findViewById<LinearLayout>(R.id.itemCerrarSesion).setOnClickListener {
             cerrarSesion()
