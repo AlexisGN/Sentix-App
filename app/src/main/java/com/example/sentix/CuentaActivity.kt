@@ -511,7 +511,7 @@ class CuentaActivity : BaseMenuActivity() {
             txtEstado.setBackgroundResource(R.drawable.bg_notification_chip_on)
 
             txtDescripcion.text =
-                "Tus recordatorios preventivos están activos. Puedes enviar una prueba o desactivarlos cuando lo necesites."
+                "Recibirás recordatorios y avisos preventivos relacionados con tu bienestar emocional."
 
             btnAccion.text = "Desactivar notificaciones"
             btnPrueba.visibility = View.VISIBLE
@@ -521,7 +521,7 @@ class CuentaActivity : BaseMenuActivity() {
             txtEstado.setBackgroundResource(R.drawable.bg_notification_chip_off)
 
             txtDescripcion.text =
-                "Activa recordatorios preventivos para mantener una rutina de cuidado personal dentro de Sentix."
+                "Activa notificaciones para recibir recordatorios y avisos preventivos de Sentix."
 
             btnAccion.text = "Activar notificaciones"
             btnPrueba.visibility = View.GONE
@@ -594,7 +594,7 @@ class CuentaActivity : BaseMenuActivity() {
 
         Toast.makeText(
             this,
-            "Notificaciones activadas correctamente",
+            "Notificaciones activadas",
             Toast.LENGTH_SHORT
         ).show()
 
@@ -631,10 +631,10 @@ class CuentaActivity : BaseMenuActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val canal = NotificationChannel(
                 canalSentix,
-                "Bienestar Sentix",
+                "Notificaciones Sentix",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Recordatorios y alertas preventivas de Sentix"
+                description = "Recordatorios y avisos preventivos de Sentix"
             }
 
             val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -678,10 +678,12 @@ class CuentaActivity : BaseMenuActivity() {
         val notificacion = NotificationCompat.Builder(this, canalSentix)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("Sentix")
-            .setContentText("Sentix te acompañará con recordatorios preventivos.")
+            .setContentText("Recuerda revisar tu bienestar emocional.")
             .setStyle(
                 NotificationCompat.BigTextStyle()
-                    .bigText("Sentix te enviará recordatorios y alertas preventivas relacionadas con tu bienestar emocional.")
+                    .bigText(
+                        "Sentix puede enviarte recordatorios para evaluarte, revisar recomendaciones y observar avisos preventivos."
+                    )
             )
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)

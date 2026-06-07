@@ -17,8 +17,10 @@
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_gravity="center"
+            android:contentDescription="Icono de notificaciones"
             android:src="@drawable/ic_notifications_sentix"
             app:tint="@color/white" />
+
     </FrameLayout>
 
     <TextView
@@ -54,7 +56,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
-        android:text="Activa recordatorios preventivos para mantener una rutina de cuidado personal dentro de Sentix."
+        android:text="Activa notificaciones para recibir recordatorios y avisos preventivos de Sentix."
         android:textColor="@color/text_soft"
         android:textSize="15sp" />
 
@@ -77,11 +79,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:lineSpacingExtra="3dp"
-            android:text="• Recordatorios de seguimiento.\n• Avisos preventivos.\n• Mensajes breves para revisar tu bienestar."
+            android:layout_marginTop="8dp"
+            android:lineSpacingExtra="4dp"
+            android:text="• Recordatorios para evaluarte&#10;• Avisos de recomendaciones&#10;• Alertas preventivas suaves"
             android:textColor="@color/text_soft"
             android:textSize="13sp" />
+
     </LinearLayout>
 
     <Button
@@ -91,12 +94,12 @@
         android:layout_marginTop="22dp"
         android:background="@drawable/bg_button"
         android:backgroundTint="@null"
-        app:backgroundTint="@null"
         android:text="Activar notificaciones"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:backgroundTint="@null" />
 
     <Button
         android:id="@+id/btnPruebaNotificaciones"
@@ -105,12 +108,12 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_button_outline_sentix"
         android:backgroundTint="@null"
-        app:backgroundTint="@null"
         android:text="Enviar prueba"
         android:textAllCaps="false"
         android:textColor="@color/sentix_blue"
         android:textSize="15sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:backgroundTint="@null" />
 
     <TextView
         android:id="@+id/btnCancelarNotificaciones"
