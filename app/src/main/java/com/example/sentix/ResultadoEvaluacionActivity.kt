@@ -11,7 +11,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 class ResultadoEvaluacionActivity : BaseMenuActivity() {
 
     private lateinit var cardResultadoPrincipal: LinearLayout
@@ -65,9 +67,9 @@ class ResultadoEvaluacionActivity : BaseMenuActivity() {
         cargarDatosUsuarioLocal()
         obtenerDatosResultado()
         mostrarResultado()
+        actualizarWidgetEstadoSentix()
         configurarEventos()
     }
-
     override fun onUsuarioActualizado(cache: UsuarioCache) {
         if (uidActual.isBlank() && cache.uid.isNotBlank()) {
             uidActual = cache.uid
@@ -174,6 +176,21 @@ class ResultadoEvaluacionActivity : BaseMenuActivity() {
         )
 
         aplicarIndicadores(estilo)
+    }
+    private fun actualizarWidgetEstadoSentix() {
+        val fechaHoraActual = SimpleDateFormat(
+            "dd/MM/yyyy HH:mm",
+            Locale.getDefault()
+        ).format(Date())
+
+        SentixWidgetUpdater.guardarUltimoEstado(
+            context = this,
+            nivel = nivelFinal,
+            fechaHora = fechaHoraActual,
+            mensaje = SentixWidgetUpdater.obtenerMensajePreventivo(nivelFinal)
+        )
+
+        Log.d("WIDGET_SENTIX", "Widget actualizado con nivel: $nivelFinal")
     }
     private fun aplicarFondoIconoRecomendacion(estilo: EstiloResultado) {
         val fondoIcono = GradientDrawable().apply {

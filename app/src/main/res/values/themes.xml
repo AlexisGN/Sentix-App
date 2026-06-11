@@ -65,4 +65,19 @@
     <!-- Tema final -->
     <style name="Theme.Login_Guevara" parent="Base.Theme.Login_Guevara" />
 
+    <style name="Theme.Login_Guevara.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <!-- Radius of the outer bound of widgets to make the rounded corners -->
+        <item name="appWidgetRadius">16dp</item>
+        <!--
+        Radius of the inner view's bound of widgets to make the rounded corners.
+        It needs to be 8dp or less than the value of appWidgetRadius
+        -->
+        <item name="appWidgetInnerRadius">8dp</item>
+    </style>
+
+    <style name="Theme.Login_Guevara.AppWidgetContainer" parent="Theme.Login_Guevara.AppWidgetContainerParent">
+        <!-- Apply padding to avoid the content of the widget colliding with the rounded corners -->
+        <item name="appWidgetPadding">16dp</item>
+    </style>
+
 </resources>

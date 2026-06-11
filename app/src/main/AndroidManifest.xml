@@ -1,64 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Permisos para Firebase, Firestore, Storage, autenticación, notificaciones y cámara -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <!-- Cámara obligatoria para evaluación facial -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Cámara obligatoria para evaluación facial -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
-
     <application
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
-        android:theme="@style/Theme.Login_Guevara"
+        android:icon="@mipmap/ic_launcher"
         android:label="Sentix"
-        android:supportsRtl="true">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Login_Guevara">
+        <receiver
+            android:name=".SentixEstadoWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sentix_estado_widget_info" />
+        </receiver>
 
         <!-- Splash: primera pantalla -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-        </activity>
-
-        <!-- Login -->
+        </activity> <!-- Login -->
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-
-        <!-- Registro -->
+            android:exported="false" /> <!-- Registro -->
         <activity
             android:name=".RegisterActivity"
-            android:exported="false" />
-
-        <!-- Menú principal / Dashboard -->
+            android:exported="false" /> <!-- Menú principal / Dashboard -->
         <activity
             android:name=".SuccessActivity"
-            android:exported="false" />
-        <!-- Evaluación por cámara / análisis facial -->
+            android:exported="false" /> <!-- Evaluación por cámara / análisis facial -->
         <activity
             android:name=".EvaluacionCamaraActivity"
-            android:exported="false" />
-
-        <!-- Evaluación por test emocional -->
+            android:exported="false" /> <!-- Evaluación por test emocional -->
         <activity
             android:name=".EvaluacionTestActivity"
-            android:exported="false" />
-        <!-- Evaluación por texto / NLP -->
+            android:exported="false" /> <!-- Evaluación por texto / NLP -->
         <activity
             android:name=".EvaluacionTextoActivity"
-            android:exported="false" />
-        <!-- Resultado final de evaluación -->
+            android:exported="false" /> <!-- Resultado final de evaluación -->
         <activity
             android:name=".ResultadoEvaluacionActivity"
             android:exported="false" />
@@ -73,25 +70,18 @@
             android:exported="false" />
         <activity
             android:name=".AcercaSentixActivity"
-            android:exported="false" />
-
-        <!-- Perfil de usuario -->
+            android:exported="false" /> <!-- Perfil de usuario -->
         <activity
             android:name=".CuentaActivity"
-            android:exported="false" />
-
-        <!-- Editar perfil -->
+            android:exported="false" /> <!-- Editar perfil -->
         <activity
             android:name=".EditarPerfilActivity"
-            android:exported="false" />
-
-        <!-- Recorte de imagen para foto de perfil -->
+            android:exported="false" /> <!-- Recorte de imagen para foto de perfil -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Sentix.UCrop" />
-
     </application>
 
 </manifest>

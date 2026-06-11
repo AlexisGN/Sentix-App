@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Sentix</string>
     <string name="web_client_id">938931082216-1e9bnual65gjd8p3pbsv0gl33qc3b9cq.apps.googleusercontent.com</string>
+
+    <!-- Widget Estado Sentix -->
+    <string name="appwidget_text">Estado Sentix</string>
+    <string name="add_widget">Agregar Estado Sentix</string>
+    <string name="app_widget_description">Muestra tu último estado emocional registrado en Sentix.</string>
+
+    <string name="widget_estado_sentix_nombre">Estado Sentix</string>
+    <string name="widget_estado_sentix_descripcion">Muestra tu último estado emocional registrado en Sentix.</string>
 </resources>

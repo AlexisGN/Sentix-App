@@ -22,6 +22,7 @@
         <item name="android:textColor">@color/text_dark</item>
         <item name="android:textSize">15sp</item>
     </style>
+
     <style name="MenuSentixItem">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">52dp</item>
@@ -45,6 +46,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="SentixProfileOption">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">76dp</item>
@@ -103,10 +105,12 @@
         <item name="android:textColor">@color/text_soft</item>
         <item name="android:textSize">28sp</item>
     </style>
+
     <style name="ShapeAppearanceOverlay.App.CircularImage" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">999dp</item>
     </style>
+
     <style name="Theme.Sentix.UCrop" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">false</item>
         <item name="android:fitsSystemWindows">true</item>
@@ -115,5 +119,15 @@
         <item name="android:navigationBarColor">#111827</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <style name="Widget.Sentix.AppWidget.Container" parent="android:Widget">
+        <item name="android:id">@android:id/background</item>
+        <item name="android:background">?android:attr/colorBackground</item>
+    </style>
+
+    <style name="Widget.Sentix.AppWidget.InnerView" parent="android:Widget">
+        <item name="android:background">?android:attr/colorBackground</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 </resources>
