@@ -58,7 +58,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_weight="1"
                 android:lineSpacingExtra="3dp"
-                android:text="Puedes mencionar clases, cansancio, motivación, preocupación o cómo va tu día."
+                android:text="Escribe una frase breve sobre cómo te has sentido hoy."
                 android:textColor="@color/text_dark"
                 android:textSize="14sp" />
 
@@ -71,7 +71,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/bg_notification_info_card"
             android:gravity="top|start"
-            android:hint="Ejemplo: Me siento cansado, pero motivado para seguir."
+            android:hint="Ejemplo: Estoy cansado, pero motivado para seguir."
             android:inputType="textMultiLine|textCapSentences"
             android:maxLength="160"
             android:maxLines="3"
