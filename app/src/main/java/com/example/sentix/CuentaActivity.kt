@@ -35,12 +35,17 @@ import com.example.sentix.data.FirebaseStorageHelper
 import com.example.sentix.data.FirebaseUserHelper
 import com.yalantis.ucrop.UCrop
 import java.io.File
+import android.graphics.drawable.Drawable
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 
 class CuentaActivity : BaseMenuActivity() {
 
     private lateinit var imgPerfil: ImageView
     private lateinit var btnCambiarFoto: View
-
+    private lateinit var contenedorCargaFotoPerfil: View
     private lateinit var txtNombrePerfil: TextView
     private lateinit var txtCorreoPerfil: TextView
     private lateinit var txtUsuarioPerfil: TextView
@@ -139,6 +144,7 @@ class CuentaActivity : BaseMenuActivity() {
         itemCambiarPassword = findViewById(R.id.itemCambiarPassword)
         itemNotificaciones = findViewById(R.id.itemNotificaciones)
         itemEliminarCuenta = findViewById(R.id.itemEliminarCuenta)
+        contenedorCargaFotoPerfil = findViewById(R.id.contenedorCargaFotoPerfil)
     }
 
     private fun configurarEventos() {
@@ -332,7 +338,34 @@ class CuentaActivity : BaseMenuActivity() {
             }
         )
     }
+    private fun mostrarCargaFotoPerfil(mostrar: Boolean) {
+        if (::contenedorCargaFotoPerfil.isInitialized) {
+            contenedorCargaFotoPerfil.visibility = if (mostrar) View.VISIBLE else View.GONE
+        }
 
+        if (::btnCambiarFoto.isInitialized) {
+            btnCambiarFoto.isEnabled = !mostrar
+            btnCambiarFoto.alpha = if (mostrar) 0.45f else 1f
+        }
+    }
+
+    private fun mostrarVistaPreviaFoto(uri: Uri) {
+        Glide.with(this)
+            .load(uri)
+            .circleCrop()
+            .dontAnimate()
+            .into(imgPerfil)
+    }
+
+    private fun restaurarFotoPerfilGuardada() {
+        val cache = UsuarioCacheManager.obtener(this)
+
+        if (cache.fotoPerfilUrl.isNotBlank()) {
+            cargarImagenPerfil(cache.fotoPerfilUrl)
+        } else {
+            imgPerfil.setImageResource(R.drawable.ic_user_big)
+        }
+    }
     private fun abrirRecorteImagen(uriOrigen: Uri) {
         try {
             val archivoDestino = File(
@@ -403,7 +436,64 @@ class CuentaActivity : BaseMenuActivity() {
             }
         }
     }
+    private fun cargarImagenPerfilFinal(
+        url: String,
+        onImagenLista: () -> Unit
+    ) {
+        Log.d("CUENTA_IMAGEN", "Cargando imagen final antes de cerrar efecto: $url")
 
+        val drawableActual = imgPerfil.drawable
+
+        val request = Glide.with(this)
+            .load(url)
+            .circleCrop()
+            .dontAnimate()
+            .listener(object : RequestListener<Drawable> {
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.e("CUENTA_IMAGEN", "No se pudo cargar la imagen final", e)
+
+                    imgPerfil.post {
+                        mostrarCargaFotoPerfil(false)
+                        restaurarFotoPerfilGuardada()
+                    }
+
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    imgPerfil.post {
+                        mostrarCargaFotoPerfil(false)
+                        onImagenLista()
+                    }
+
+                    return false
+                }
+            })
+
+        if (drawableActual != null) {
+            request
+                .placeholder(drawableActual)
+                .error(drawableActual)
+                .into(imgPerfil)
+        } else {
+            request
+                .placeholder(R.drawable.ic_user_big)
+                .error(R.drawable.ic_user_big)
+                .into(imgPerfil)
+        }
+    }
     private fun subirFotoPerfil(uri: Uri) {
         val user = FirebaseAuthHelper.obtenerUsuarioActual()
 
@@ -429,7 +519,9 @@ class CuentaActivity : BaseMenuActivity() {
             return
         }
 
-        btnCambiarFoto.isEnabled = false
+        mostrarVistaPreviaFoto(uri)
+        mostrarCargaFotoPerfil(true)
+
         Toast.makeText(this, "Subiendo foto...", Toast.LENGTH_SHORT).show()
 
         FirebaseStorageHelper.subirFotoPerfil(
@@ -440,32 +532,32 @@ class CuentaActivity : BaseMenuActivity() {
                     uid = uidActual,
                     fotoPerfilUrl = url,
                     onSuccess = {
-                        btnCambiarFoto.isEnabled = true
+                        cargarImagenPerfilFinal(url) {
+                            UsuarioCacheManager.actualizarFoto(
+                                context = this,
+                                fotoPerfilUrl = url
+                            )
 
-                        cargarImagenPerfil(url)
+                            /*
+                             * Actualiza el menú lateral al instante.
+                             * Primero refresca los datos desde caché y luego fuerza la recarga visual de la foto.
+                             */
+                            refrescarMenuDesdeCache()
+                            refrescarFotoMenuAlInstante(url)
 
-                        UsuarioCacheManager.actualizarFoto(
-                            context = this,
-                            fotoPerfilUrl = url
-                        )
+                            Toast.makeText(
+                                this,
+                                "Foto actualizada correctamente",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                        /*
-                         * Actualiza el menú lateral al instante.
-                         * Primero refresca los datos desde caché y luego fuerza la recarga visual de la foto.
-                         */
-                        refrescarMenuDesdeCache()
-                        refrescarFotoMenuAlInstante(url)
-
-                        Toast.makeText(
-                            this,
-                            "Foto actualizada correctamente",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        Log.d("CUENTA_UPLOAD", "Foto guardada correctamente: $url")
+                            Log.d("CUENTA_UPLOAD", "Foto guardada correctamente: $url")
+                        }
                     },
                     onError = { mensaje ->
-                        btnCambiarFoto.isEnabled = true
+                        mostrarCargaFotoPerfil(false)
+                        restaurarFotoPerfilGuardada()
+
                         Log.e("CUENTA_UPLOAD", "La foto subió, pero falló Firestore: $mensaje")
 
                         Toast.makeText(
@@ -477,7 +569,9 @@ class CuentaActivity : BaseMenuActivity() {
                 )
             },
             onError = { mensaje ->
-                btnCambiarFoto.isEnabled = true
+                mostrarCargaFotoPerfil(false)
+                restaurarFotoPerfilGuardada()
+
                 Log.e("CUENTA_UPLOAD", "Error al subir imagen: $mensaje")
 
                 Toast.makeText(

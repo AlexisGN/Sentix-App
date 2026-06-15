@@ -49,6 +49,41 @@
                 android:src="@drawable/ic_user_big"
                 android:tint="@null"
                 app:tint="@null" />
+            <FrameLayout
+                android:id="@+id/contenedorCargaFotoPerfil"
+                android:layout_width="138dp"
+                android:layout_height="138dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_profile_loading_overlay"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ProgressBar
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@android:color/white" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Subiendo..."
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </FrameLayout>
             <!-- BOTÓN PEQUEÑO EDITAR FOTO -->
             <FrameLayout
                 android:id="@+id/btnCambiarFoto"
