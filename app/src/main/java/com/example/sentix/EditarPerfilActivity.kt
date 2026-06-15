@@ -12,7 +12,7 @@ import com.example.sentix.data.FirebaseAuthHelper
 import com.example.sentix.data.FirebaseUserHelper
 import java.util.Calendar
 import java.util.Locale
-
+import android.text.InputType
 class EditarPerfilActivity : BaseMenuActivity() {
 
     private lateinit var btnVolver: ImageButton
@@ -30,6 +30,7 @@ class EditarPerfilActivity : BaseMenuActivity() {
 
     override fun onContenidoCreado() {
         enlazarVistas()
+        configurarCamposBloqueados()
         configurarEventos()
         cargarFormularioDesdeCache()
     }
@@ -66,14 +67,50 @@ class EditarPerfilActivity : BaseMenuActivity() {
         }
 
         edtFechaNacimiento.setOnClickListener {
-            abrirCalendario()
+            Toast.makeText(
+                this,
+                "La fecha de nacimiento no se puede modificar.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        edtCorreo.setOnClickListener {
+            Toast.makeText(
+                this,
+                "El correo está vinculado al inicio de sesión y no se puede editar aquí.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         btnGuardar.setOnClickListener {
             guardarCambios()
         }
     }
+    private fun configurarCamposBloqueados() {
+        bloquearCampoSoloLectura(
+            campo = edtCorreo,
+            textoAyuda = "Correo vinculado al inicio de sesión"
+        )
 
+        bloquearCampoSoloLectura(
+            campo = edtFechaNacimiento,
+            textoAyuda = "Fecha registrada al crear la cuenta"
+        )
+    }
+
+    private fun bloquearCampoSoloLectura(
+        campo: EditText,
+        textoAyuda: String
+    ) {
+        campo.isFocusable = false
+        campo.isFocusableInTouchMode = false
+        campo.isCursorVisible = false
+        campo.isLongClickable = false
+        campo.inputType = InputType.TYPE_NULL
+        campo.keyListener = null
+        campo.alpha = 0.75f
+        campo.hint = textoAyuda
+    }
     private fun cargarFormularioDesdeCache() {
         val cache = UsuarioCacheManager.obtener(this)
 
@@ -345,48 +382,6 @@ class EditarPerfilActivity : BaseMenuActivity() {
                 ).show()
             }
         )
-    }
-
-    private fun abrirCalendario() {
-        val calendario = Calendar.getInstance()
-
-        val dialogo = DatePickerDialog(
-            this,
-            R.style.DatePickerStyle,
-            { _, year, month, day ->
-                val fecha = String.format(
-                    Locale.getDefault(),
-                    "%02d/%02d/%04d",
-                    day,
-                    month + 1,
-                    year
-                )
-                edtFechaNacimiento.setText(fecha)
-            },
-            calendario.get(Calendar.YEAR),
-            calendario.get(Calendar.MONTH),
-            calendario.get(Calendar.DAY_OF_MONTH)
-        )
-
-        dialogo.datePicker.maxDate = System.currentTimeMillis()
-
-        dialogo.setOnShowListener {
-            dialogo.getButton(DialogInterface.BUTTON_POSITIVE)?.apply {
-                text = "Aceptar"
-                setTextColor(Color.parseColor("#2563EB"))
-                textSize = 14f
-                isAllCaps = false
-            }
-
-            dialogo.getButton(DialogInterface.BUTTON_NEGATIVE)?.apply {
-                text = "Cancelar"
-                setTextColor(Color.parseColor("#7C3AED"))
-                textSize = 14f
-                isAllCaps = false
-            }
-        }
-
-        dialogo.show()
     }
 
     private fun capitalizarTexto(texto: String): String {
