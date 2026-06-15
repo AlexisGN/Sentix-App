@@ -19,6 +19,12 @@ import com.example.sentix.data.FirebaseUserHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlin.math.roundToInt
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Build
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 
 abstract class BaseMenuActivity : AppCompatActivity() {
 
@@ -150,14 +156,14 @@ abstract class BaseMenuActivity : AppCompatActivity() {
 
         enlazarMenuVistas()
 
-        SystemBarsHelper.aplicarInsetsPersonalizado(
-            activity = this,
-            view = sidebarPanel,
-            paddingStartDp = 18f,
-            paddingTopExtraDp = 24f,
-            paddingEndDp = 18f,
-            paddingBottomExtraDp = 24f
-        )
+//        SystemBarsHelper.aplicarInsetsPersonalizado(
+//            activity = this,
+//            view = sidebarPanel,
+//            paddingStartDp = 18f,
+//            paddingTopExtraDp = 24f,
+//            paddingEndDp = 18f,
+//            paddingBottomExtraDp = 24f
+//        )
 
         SystemBarsHelper.aplicarInsets(
             activity = this,
@@ -421,14 +427,14 @@ abstract class BaseMenuActivity : AppCompatActivity() {
 
     private fun configurarSidebar() {
         sidebarWrapper.post {
-            val anchoVisibleToggle = dpToPx(38f)
-            hiddenTranslationX = -(sidebarWrapper.width - anchoVisibleToggle).toFloat()
-
+            hiddenTranslationX = -sidebarWrapper.width.toFloat() - dpToPx(24f).toFloat()
             sidebarWrapper.translationX = hiddenTranslationX
+            sidebarWrapper.alpha = 0f
+
             overlayView.visibility = View.GONE
             overlayView.alpha = 0f
-            menuAbierto = false
 
+            menuAbierto = false
             actualizarIconoToggle()
         }
 
@@ -439,8 +445,45 @@ abstract class BaseMenuActivity : AppCompatActivity() {
         overlayView.setOnClickListener {
             ocultarMenu()
         }
-    }
 
+        aplicarInsetsMenu()
+    }
+    private fun aplicarInsetsMenu() {
+        val margenPanelStart = dpToPx(10f)
+        val margenPanelTop = dpToPx(8f)
+        val margenPanelBottom = dpToPx(8f)
+
+        val paddingStart = dpToPx(18f)
+        val paddingTop = dpToPx(18f)
+        val paddingEnd = dpToPx(18f)
+        val paddingBottom = dpToPx(18f)
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootBaseMenu) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            val panelParams = sidebarPanel.layoutParams as FrameLayout.LayoutParams
+            panelParams.leftMargin = margenPanelStart
+            panelParams.topMargin = systemBars.top + margenPanelTop
+            panelParams.bottomMargin = systemBars.bottom + margenPanelBottom
+            sidebarPanel.layoutParams = panelParams
+
+            sidebarPanel.updatePadding(
+                left = paddingStart,
+                top = paddingTop,
+                right = paddingEnd,
+                bottom = paddingBottom
+            )
+
+            val btnParams = btnSidebarToggle.layoutParams as FrameLayout.LayoutParams
+            btnParams.leftMargin = dpToPx(5f)
+            btnParams.topMargin = systemBars.top + dpToPx(4f)
+            btnSidebarToggle.layoutParams = btnParams
+
+            insets
+        }
+
+        ViewCompat.requestApplyInsets(rootBaseMenu)
+    }
     private fun configurarEventosMenu() {
         findViewById<LinearLayout>(R.id.itemCuenta).setOnClickListener {
             val cache = UsuarioCacheManager.obtener(this)
@@ -558,48 +601,94 @@ abstract class BaseMenuActivity : AppCompatActivity() {
     }
 
     protected fun mostrarMenu() {
+        menuAbierto = true
+        actualizarIconoToggle()
+        ocultarBotonMenuExterno()
+
+        sidebarWrapper.visibility = View.VISIBLE
+
         sidebarWrapper.animate()
             .translationX(0f)
-            .setDuration(180)
+            .alpha(1f)
+            .setDuration(260)
             .start()
 
         overlayView.visibility = View.VISIBLE
         overlayView.animate()
             .alpha(1f)
-            .setDuration(160)
+            .setDuration(220)
             .start()
 
-        menuAbierto = true
-        actualizarIconoToggle()
+        aplicarBlurContenido(true)
     }
 
     protected fun ocultarMenu() {
+        menuAbierto = false
+        actualizarIconoToggle()
+
         sidebarWrapper.animate()
             .translationX(hiddenTranslationX)
-            .setDuration(180)
+            .alpha(0f)
+            .setDuration(240)
+            .withEndAction {
+                mostrarBotonMenuExterno()
+            }
             .start()
 
         overlayView.animate()
             .alpha(0f)
-            .setDuration(140)
+            .setDuration(180)
             .withEndAction {
                 overlayView.visibility = View.GONE
             }
             .start()
 
-        menuAbierto = false
-        actualizarIconoToggle()
+        aplicarBlurContenido(false)
     }
 
     private fun actualizarIconoToggle() {
         btnSidebarToggle.setImageResource(R.drawable.ic_menu_handle_minimal)
+        btnSidebarToggle.rotation = 0f
+    }
+    private fun ocultarBotonMenuExterno() {
+        btnSidebarToggle.isEnabled = false
 
         btnSidebarToggle.animate()
-            .rotation(if (menuAbierto) 180f else 0f)
+            .alpha(0f)
             .setDuration(120)
+            .withEndAction {
+                if (menuAbierto) {
+                    btnSidebarToggle.visibility = View.INVISIBLE
+                }
+            }
             .start()
     }
 
+    private fun mostrarBotonMenuExterno() {
+        btnSidebarToggle.visibility = View.VISIBLE
+        btnSidebarToggle.isEnabled = true
+        btnSidebarToggle.alpha = 0f
+
+        btnSidebarToggle.animate()
+            .alpha(1f)
+            .setDuration(140)
+            .start()
+    }
+    private fun aplicarBlurContenido(aplicar: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            mainContentContainer.setRenderEffect(
+                if (aplicar) {
+                    RenderEffect.createBlurEffect(
+                        20f,
+                        20f,
+                        Shader.TileMode.CLAMP
+                    )
+                } else {
+                    null
+                }
+            )
+        }
+    }
     private fun dpToPx(dp: Float): Int {
         return (dp * resources.displayMetrics.density).roundToInt()
     }

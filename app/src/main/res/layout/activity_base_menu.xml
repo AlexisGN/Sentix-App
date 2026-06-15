@@ -1,43 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootBaseMenu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_screen">
+    android:background="@android:color/transparent">
 
+    <!-- CONTENIDO PRINCIPAL -->
     <FrameLayout
         android:id="@+id/mainContentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- CAPA OSCURA / BLUR -->
     <View
         android:id="@+id/viewOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#55000000"
+        android:alpha="0"
+        android:background="#990B0D12"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone" />
 
+    <!-- BOTÓN SOLO ÍCONO ARRIBA IZQUIERDA -->
+    <ImageButton
+        android:id="@+id/btnSidebarToggle"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Abrir menú"
+        android:elevation="30dp"
+        android:padding="0dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_menu_handle_minimal" />
+
+    <!-- WRAPPER DEL MENÚ -->
     <FrameLayout
         android:id="@+id/sidebarWrapper"
-        android:layout_width="300dp"
+        android:layout_width="330dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start">
+        android:layout_gravity="start"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/sidebarPanel"
-            android:layout_width="272dp"
+            android:layout_width="298dp"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_sidebar_panel"
-            android:elevation="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/bg_sidebar_neotactile"
+            android:elevation="24dp"
             android:orientation="vertical"
             android:paddingStart="18dp"
-            android:paddingTop="34dp"
+            android:paddingTop="18dp"
             android:paddingEnd="18dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="18dp">
+
+            <!-- LOGO + NOMBRE -->
+            <LinearLayout
+                android:id="@+id/headerMenuTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imgLogoMenu"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/sentix_logo" />
+
+                <TextView
+                    android:id="@+id/txtTituloMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Sentix"
+                    android:textColor="#F5F8FF"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- TARJETA USUARIO -->
+            <LinearLayout
+                android:id="@+id/cardUsuarioMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/bg_user_card_neotactile"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/imgPerfilMenu"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_avatar_circle_menu"
+                    android:padding="2dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_usermenu" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtNombreMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Usuario"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtCorreoMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="correo@gmail.com"
+                        android:textColor="#E5ECF8"
+                        android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="CUENTA"
+                android:textColor="#E8EEF8"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/itemCuenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_menu_item_neotactile"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:minHeight="52dp"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="14dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_usermenu"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Mi perfil"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/itemInicio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_menu_item_neotactile"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:minHeight="52dp"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="14dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_home_menu"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text="Inicio"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="SENTIX"
+                android:textColor="#E8EEF8"
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -51,201 +235,36 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- LOGO -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="58dp"
-                            android:layout_height="58dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/sentix_logo" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="7dp"
-                            android:text="Sentix"
-                            android:textColor="@color/white"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <!-- USUARIO -->
-                    <LinearLayout
-                        android:id="@+id/cardUsuarioMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="22dp"
-                        android:background="@drawable/bg_user_card"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="14dp">
-
-                        <FrameLayout
-                            android:layout_width="66dp"
-                            android:layout_height="66dp">
-
-                            <ImageView
-                                android:id="@+id/imgPerfilMenu"
-                                android:layout_width="62dp"
-                                android:layout_height="62dp"
-                                android:layout_gravity="center"
-                                android:padding="0dp"
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/ic_usermenu" />
-
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/txtNombreMenu"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Usuario"
-                                android:textColor="@color/white"
-                                android:textSize="13sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/txtCorreoMenu"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:text="correo@gmail.com"
-                                android:textColor="#D8DDF7"
-                                android:textSize="9sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- SECCIÓN CUENTA -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginBottom="9dp"
-                        android:text="CUENTA"
-                        android:textColor="#AEB7D8"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:id="@+id/itemCuenta"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_menu_item_sidebar"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="14dp"
-                        android:paddingTop="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="14dp"
-                        tools:visibility="visible">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_usermenu" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:text="Mi perfil"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/itemInicio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_menu_item_sidebar"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingStart="14dp"
-                        android:paddingTop="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="14dp">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_home_menu" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-                            android:text="Inicio"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <!-- SECCIÓN SENTIX -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:layout_marginBottom="9dp"
-                        android:text="SENTIX"
-                        android:textColor="#AEB7D8"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-
                     <LinearLayout
                         android:id="@+id/itemEvaluacion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_menu_item_sidebar"
+                        android:background="@drawable/bg_menu_item_neotactile"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:paddingStart="14dp"
+                        android:paddingStart="16dp"
                         android:paddingTop="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="14dp"
-                        android:visibility="visible"
-                        tools:visibility="visible">
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="14dp">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_facemenu" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_facemenu"
+                            app:tint="#FFFFFF" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
                             android:text="Evaluación emocional"
-                            android:textColor="@color/white"
+                            android:textColor="#FFFFFF"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -253,32 +272,31 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_menu_item_sidebar"
+                        android:background="@drawable/bg_menu_item_neotactile"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:paddingStart="14dp"
+                        android:paddingStart="16dp"
                         android:paddingTop="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="14dp"
-                        android:visibility="visible"
-                        tools:visibility="visible">
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="14dp">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_chart" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_chart"
+                            app:tint="#FFFFFF" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
                             android:text="Historial emocional"
-                            android:textColor="@color/white"
+                            android:textColor="#FFFFFF"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -286,32 +304,31 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_menu_item_sidebar"
+                        android:background="@drawable/bg_menu_item_neotactile"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:paddingStart="14dp"
+                        android:paddingStart="16dp"
                         android:paddingTop="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="14dp"
-                        android:visibility="visible"
-                        tools:visibility="visible">
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="14dp">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_info" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_recomendaciones"
+                            app:tint="#FFFFFF" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
                             android:text="Recomendaciones"
-                            android:textColor="@color/white"
+                            android:textColor="#FFFFFF"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -319,32 +336,31 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_menu_item_sidebar"
+                        android:background="@drawable/bg_menu_item_neotactile"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:paddingStart="14dp"
+                        android:paddingStart="16dp"
                         android:paddingTop="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="14dp"
-                        android:visibility="visible"
-                        tools:visibility="visible">
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="14dp">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_alert" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_alertmenu"
+                            app:tint="#FFFFFF" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
                             android:text="Alertas preventivas"
-                            android:textColor="@color/white"
+                            android:textColor="#FFFFFF"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -352,81 +368,69 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:background="@drawable/bg_menu_item_sidebar"
+                        android:background="@drawable/bg_menu_item_neotactile"
                         android:clickable="true"
                         android:focusable="true"
                         android:gravity="center_vertical"
+                        android:minHeight="52dp"
                         android:orientation="horizontal"
-                        android:paddingStart="14dp"
+                        android:paddingStart="16dp"
                         android:paddingTop="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="14dp"
-                        android:visibility="visible"
-                        tools:visibility="visible">
+                        android:paddingEnd="16dp"
+                        android:paddingBottom="14dp">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:src="@drawable/ic_about_sentix" />
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_about_sentix"
+                            app:tint="#FFFFFF" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="14dp"
                             android:text="Acerca de Sentix"
-                            android:textColor="@color/white"
+                            android:textColor="#FFFFFF"
                             android:textSize="14sp"
                             android:textStyle="bold" />
-
                     </LinearLayout>
 
                 </LinearLayout>
-
             </ScrollView>
 
             <LinearLayout
                 android:id="@+id/itemCerrarSesion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/bg_logout_sidebar"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_logout_neotactile"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
+                android:minHeight="56dp"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:paddingStart="18dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="16dp">
 
                 <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:src="@drawable/ic_logout" />
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_logout"
+                    app:tint="#FFFFFF" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
                     android:text="Cerrar sesión"
-                    android:textColor="@color/white"
+                    android:textColor="#FFFFFF"
                     android:textSize="14sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
         </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/btnSidebarToggle"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="-2dp"
-            android:background="@null"
-            android:contentDescription="Abrir menú"
-            android:padding="4dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_menu_handle_minimal"
-            app:tint="@color/black" />
-
     </FrameLayout>
 
 </FrameLayout>
